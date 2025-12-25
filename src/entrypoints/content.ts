@@ -11,18 +11,23 @@ export default defineContentScript({
   
   async main() {
     // 1. Initial Load
-    const settings = await settingsStorage.getValue();
+    let settings = await settingsStorage.getValue();
     runFeatures(settings);
 
     // 2. Watch for settings changes
     settingsStorage.watch((newSettings) => {
-      if (newSettings) runFeatures(newSettings);
+      if (newSettings) {
+        settings = newSettings;
+        runFeatures(newSettings);
+      }
     });
 
     // 3. Handle Dev.to SPA navigation (InstantClick/Turbo)
     // Dev.to pages change without full reload. We observe the body for significant changes.
     const observer = new MutationObserver(() => {
-      runFeatures(settings); 
+      observer.disconnect();
+      runFeatures(settings);
+      observer.observe(document.body, { childList: true, subtree: true });
     });
     
     observer.observe(document.body, { childList: true, subtree: true });
