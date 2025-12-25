@@ -23,14 +23,37 @@ export default defineContentScript({
     });
 
     // 3. Handle Dev.to SPA navigation (InstantClick/Turbo)
-    // Dev.to pages change without full reload. We observe the body for significant changes.
-    const observer = new MutationObserver(() => {
-      observer.disconnect();
-      runFeatures(settings);
-      observer.observe(document.body, { childList: true, subtree: true });
+    // Dev.to pages change without full reload. We observe for significant changes.
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+    
+    const observer = new MutationObserver((mutations) => {
+      // Clear existing timer to debounce rapid mutations
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+      
+      // Only process if there are significant changes (childList mutations)
+      const hasSignificantChanges = mutations.some(
+        mutation => mutation.type === 'childList' && mutation.addedNodes.length > 0
+      );
+      
+      if (hasSignificantChanges) {
+        debounceTimer = setTimeout(() => {
+          runFeatures(settings);
+          debounceTimer = null;
+        }, 150); // 150ms debounce delay
+      }
     });
     
-    observer.observe(document.body, { childList: true, subtree: true });
+    // Observe the main content container or body if not found
+    const targetNode = document.querySelector('#main-content') || document.body;
+    observer.observe(targetNode, { 
+      childList: true, 
+      subtree: true,
+      // Only watch for added/removed nodes, not attributes or character data
+      attributes: false,
+      characterData: false
+    });
   },
 });
 
