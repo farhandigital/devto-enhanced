@@ -18,15 +18,6 @@ body.dt-clean-right .crayons-layout__sidebar-right > *:not(.dt-toc-container) {
   display: none !important;
 }
 
-/* Center Content when sidebars are gone (Adjusting Grid) */
-body.dt-clean-left.dt-clean-right .crayons-layout--3-cols {
-  grid-template-columns: 1fr minmax(0, 800px) 1fr !important;
-}
-
-body.dt-clean-left.dt-clean-right .crayons-layout__content {
-  grid-column: 2 !important;
-}
-
 /* --- Table of Contents --- */
 .dt-toc-container {
   position: sticky;
