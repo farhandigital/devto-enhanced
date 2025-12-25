@@ -1,8 +1,11 @@
 /* --- Layout Cleaning Classes --- */
 
-/* Hide Left Sidebar - Hide both the subforem sidebar and main navigation */
-body.dt-clean-left #main-side-bar,
-body.dt-clean-left #sidebar-wrapper-left {
+/* Hide Left Sidebar - Hide content inside sidebars, not the sidebars themselves */
+body.dt-clean-left #main-side-bar > * {
+  display: none !important;
+}
+
+body.dt-clean-left #sidebar-wrapper-left > * {
   display: none !important;
 }
 
