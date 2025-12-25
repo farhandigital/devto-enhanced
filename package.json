@@ -1,6 +1,6 @@
 {
-  "name": "wxt-svelte-starter",
-  "description": "manifest.json description",
+  "name": "devto-enhanced",
+  "description": "Enhance your reading experience on dev.to by clearing clutters, adding Table of Content, and much more.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
