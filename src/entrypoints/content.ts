@@ -7,7 +7,7 @@ import './devto.css';
 
 export default defineContentScript({
   matches: ['https://dev.to/*'],
-  cssInjectionMode: 'ui', 
+  cssInjectionMode: 'manifest', 
   
   async main() {
     // 1. Initial Load
