@@ -61,6 +61,6 @@ export function renderTableOfContents(settings: ExtensionSettings) {
   tocInner.appendChild(list);
   tocContainer.appendChild(tocInner);
 
-  // Inject ToC as the first item in the right sidebar
-  rightSidebar.insertBefore(tocContainer, rightSidebar.firstChild);
+  // Inject ToC as the last item in the right sidebar
+  rightSidebar.appendChild(tocContainer);
 }

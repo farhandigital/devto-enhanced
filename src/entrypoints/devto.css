@@ -29,6 +29,8 @@ body.dt-clean-left.dt-clean-right .crayons-layout__content {
 
 /* --- Table of Contents --- */
 .dt-toc-container {
+  position: sticky;
+  top: 80px;
   padding: 1rem;
   background: var(--card-bg, #fff);
   border-radius: 0.375rem;
@@ -37,10 +39,7 @@ body.dt-clean-left.dt-clean-right .crayons-layout__content {
   font-size: 0.9rem;
 }
 
-/* Make ToC sticky within the sidebar */
 .dt-toc-inner {
-  position: sticky;
-  top: 80px;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
 }
