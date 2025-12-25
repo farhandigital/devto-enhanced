@@ -1,11 +1,7 @@
 /* --- Layout Cleaning Classes --- */
 
-/* Hide Left Sidebar - Hide original content inside sidebar, not the sidebar itself */
-body.dt-clean-left .crayons-layout__sidebar-left {
-  min-width: 240px; /* Maintain sidebar width */
-}
-
-body.dt-clean-left .crayons-layout__sidebar-left > * {
+/* Hide Left Sidebar - Hide the main navigation sidebar (#main-side-bar) */
+body.dt-clean-left #main-side-bar {
   display: none !important;
 }
 
