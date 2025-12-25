@@ -64,20 +64,20 @@
     }
   });
 
-  function handleToggle(
-    section: keyof ExtensionSettings,
-    key: string,
+  function handleToggle<K extends keyof ExtensionSettings>(
+    section: K,
+    key: keyof ExtensionSettings[K],
     e: Event
   ) {
     const target = e.target as HTMLInputElement;
-    updateSetting(section as any, key as any, target.checked);
+    updateSetting(section, key, target.checked);
   }
 
-  function getSettingValue(
-    section: keyof ExtensionSettings,
-    key: string
+  function getSettingValue<K extends keyof ExtensionSettings>(
+    section: K,
+    key: keyof ExtensionSettings[K]
   ): boolean {
-    return (settings[section] as any)[key];
+    return settings[section][key] as boolean;
   }
 </script>
 
@@ -88,16 +88,17 @@
     <section>
       <h3>{title}</h3>
       {#each items as item}
+        {@const itemKey = item.key as keyof ExtensionSettings[typeof section]}
         <div class="toggle-row">
           <span class="toggle-label" id="{section}-{item.key}-label">{item.label}</span>
           <label class="switch" for="{section}-{item.key}">
             <input 
               type="checkbox" 
               id="{section}-{item.key}"
-              checked={getSettingValue(section, item.key)} 
-              on:change={(e) => handleToggle(section, item.key, e)}
+              checked={getSettingValue(section, itemKey)} 
+              on:change={(e) => handleToggle(section, itemKey, e)}
               aria-labelledby="{section}-{item.key}-label"
-              aria-checked={getSettingValue(section, item.key)}
+              aria-checked={getSettingValue(section, itemKey)}
             >
             <span class="slider" aria-hidden="true"></span>
           </label>
