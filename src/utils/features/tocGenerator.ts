@@ -47,12 +47,6 @@ export function renderTableOfContents(settings: ExtensionSettings) {
     link.href = `#${heading.id}`;
     link.className = 'dt-toc-link';
     link.textContent = heading.textContent;
-    
-    // Smooth scroll
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      heading.scrollIntoView({ behavior: 'smooth' });
-    });
 
     item.appendChild(link);
     list.appendChild(item);
