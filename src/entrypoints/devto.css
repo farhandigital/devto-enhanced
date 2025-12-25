@@ -63,8 +63,8 @@ body.dt-clean-right .crayons-layout__sidebar-right > *:not(.dt-toc-container) {
 }
 
 .dt-toc-link:hover {
-  color: var(--base-100, #3b49df);
-  border-left-color: var(--base-100, #3b49df);
+  color: var(--accent-brand, #3b49df);
+  border-left-color: var(--accent-brand, #3b49df);
 }
 
 /* Nesting levels */

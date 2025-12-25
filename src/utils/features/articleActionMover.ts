@@ -5,9 +5,8 @@ export function handleEngagementButtons(settings: ExtensionSettings) {
   if (!isArticle) return;
 
   const actionsContainer = document.querySelector<HTMLElement>('.crayons-article-actions');
-  const titleArea = document.querySelector('.crayons-article__header__meta');
   
-  if (!actionsContainer || !titleArea) return;
+  if (!actionsContainer) return;
 
   const isMoved = actionsContainer.classList.contains('dt-engagement-moved');
   
@@ -72,9 +71,16 @@ function getUniqueSelector(element: Element): string {
   
   // Try to use unique class combination
   if (element.className && typeof element.className === 'string') {
-    const classes = element.className.trim().split(/\s+/).join('.');
-    if (classes && document.querySelectorAll(`.${classes}`).length === 1) {
-      return `.${classes}`;
+    const classes = element.className.trim().split(/\s+/);
+    const escapedClasses = classes.map(c => CSS.escape(c)).join('.');
+    if (escapedClasses) {
+      try {
+        if (document.querySelectorAll(`.${escapedClasses}`).length === 1) {
+          return `.${escapedClasses}`;
+        }
+      } catch {
+        // Invalid selector, fall through to nth-child
+      }
     }
   }
   

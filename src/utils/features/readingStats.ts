@@ -22,10 +22,16 @@ export function renderReadingStats(settings: ExtensionSettings) {
   statsContainer.id = 'dt-reading-stats';
   statsContainer.className = 'dt-reading-stats';
   
-  statsContainer.innerHTML = `
-    <span class="dt-stat-badge">📝 ${wordCount.toLocaleString()} words</span>
-    <span class="dt-stat-badge">⏱️ ${readTime} min read</span>
-  `;
+  const wordBadge = document.createElement('span');
+  wordBadge.className = 'dt-stat-badge';
+  wordBadge.textContent = `📝 ${wordCount.toLocaleString()} words`;
+  
+  const timeBadge = document.createElement('span');
+  timeBadge.className = 'dt-stat-badge';
+  timeBadge.textContent = `⏱️ ${readTime} min read`;
+  
+  statsContainer.appendChild(wordBadge);
+  statsContainer.appendChild(timeBadge);
 
   title.insertAdjacentElement('afterend', statsContainer);
 }
