@@ -64,13 +64,19 @@
     }
   });
 
-  function handleToggle<K extends keyof ExtensionSettings>(
+  async function handleToggle<K extends keyof ExtensionSettings>(
     section: K,
     key: keyof ExtensionSettings[K],
     e: Event
   ) {
     const target = e.target as HTMLInputElement;
-    updateSetting(section, key, target.checked);
+    try {
+      await updateSetting(section, key, target.checked);
+    } catch (error) {
+      console.error('Failed to update setting:', error);
+      // Revert the checkbox state on error
+      target.checked = !target.checked;
+    }
   }
 
   function getSettingValue<K extends keyof ExtensionSettings>(
