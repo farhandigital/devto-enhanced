@@ -3,6 +3,7 @@ import { handleEngagementButtons } from '@/utils/features/articleActionMover';
 import { renderReadingStats } from '@/utils/features/readingStats';
 import { renderTableOfContents } from '@/utils/features/tocGenerator';
 import { settingsStorage } from '@/utils/storage';
+import type { ExtensionSettings } from '@/utils/types';
 import './devto.css';
 
 export default defineContentScript({
@@ -57,7 +58,7 @@ export default defineContentScript({
   },
 });
 
-function runFeatures(settings: any) {
+function runFeatures(settings: ExtensionSettings) {
   // Apply global layout cleaning (CSS classes)
   applyLayoutCleaning(settings);
 

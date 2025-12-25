@@ -15,9 +15,13 @@
     });
   });
 
-  function handleToggle(section: keyof ExtensionSettings, key: string, e: Event) {
+  function handleToggle<K extends keyof ExtensionSettings>(
+    section: K,
+    key: keyof ExtensionSettings[K],
+    e: Event
+  ) {
     const target = e.target as HTMLInputElement;
-    updateSetting(section, key as any, target.checked);
+    updateSetting(section, key, target.checked);
   }
 </script>
 
