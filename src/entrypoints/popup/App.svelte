@@ -7,20 +7,20 @@
   let settings: ExtensionSettings = DEFAULT_SETTINGS;
   let unwatch: (() => void) | undefined;
 
-  type ToggleItem = {
-    key: string;
+  type ToggleItem<K extends keyof ExtensionSettings> = {
+    key: keyof ExtensionSettings[K];
     label: string;
   };
 
-  type ToggleSection = {
-    section: keyof ExtensionSettings;
+  type ToggleSection<K extends keyof ExtensionSettings> = {
+    section: K;
     title: string;
-    items: ToggleItem[];
+    items: ToggleItem<K>[];
   };
 
-  const toggleConfig: ToggleSection[] = [
+  const toggleConfig: (ToggleSection<'article'> | ToggleSection<'home'>)[] = [
     {
-      section: 'article',
+      section: 'article' as const,
       title: 'Article Page',
       items: [
         { key: 'hideLeftSidebar', label: 'Hide Left Sidebar' },
@@ -31,14 +31,14 @@
       ],
     },
     {
-      section: 'home',
+      section: 'home' as const,
       title: 'Homepage',
       items: [
         { key: 'hideLeftSidebar', label: 'Hide Left Sidebar' },
         { key: 'hideRightSidebar', label: 'Hide Right Sidebar' },
       ],
     },
-  ];
+  ] as const;
 
   onMount(async () => {
     try {
@@ -64,13 +64,20 @@
     }
   });
 
-  function handleToggle<K extends keyof ExtensionSettings>(
-    section: K,
-    key: keyof ExtensionSettings[K],
+  function handleToggle(
+    section: keyof ExtensionSettings,
+    key: string,
     e: Event
   ) {
     const target = e.target as HTMLInputElement;
-    updateSetting(section, key, target.checked);
+    updateSetting(section as any, key as any, target.checked);
+  }
+
+  function getSettingValue(
+    section: keyof ExtensionSettings,
+    key: string
+  ): boolean {
+    return (settings[section] as any)[key];
   }
 </script>
 
@@ -87,10 +94,10 @@
             <input 
               type="checkbox" 
               id="{section}-{item.key}"
-              checked={settings[section][item.key]} 
+              checked={getSettingValue(section, item.key)} 
               on:change={(e) => handleToggle(section, item.key, e)}
               aria-labelledby="{section}-{item.key}-label"
-              aria-checked={settings[section][item.key]}
+              aria-checked={getSettingValue(section, item.key)}
             >
             <span class="slider" aria-hidden="true"></span>
           </label>
