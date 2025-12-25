@@ -1,6 +1,14 @@
 import type { ExtensionSettings } from '@/utils/types';
 
 /**
+ * Helper to toggle sidebar CSS classes on the body element
+ */
+function toggleSidebarClass(body: HTMLElement, hideLeft: boolean, hideRight: boolean) {
+  body.classList.toggle('dt-clean-left', hideLeft);
+  body.classList.toggle('dt-clean-right', hideRight);
+}
+
+/**
  * Toggles CSS classes on the body to hide/show sidebars
  */
 export function applyLayoutCleaning(settings: ExtensionSettings) {
@@ -10,32 +18,8 @@ export function applyLayoutCleaning(settings: ExtensionSettings) {
   const body = document.body;
 
   if (isArticle) {
-    // Left Sidebar
-    if (settings.article.hideLeftSidebar) {
-      body.classList.add('dt-clean-left');
-    } else {
-      body.classList.remove('dt-clean-left');
-    }
-
-    // Right Sidebar
-    if (settings.article.hideRightSidebar) {
-      body.classList.add('dt-clean-right');
-    } else {
-      body.classList.remove('dt-clean-right');
-    }
+    toggleSidebarClass(body, settings.article.hideLeftSidebar, settings.article.hideRightSidebar);
   } else if (isHome) {
-    // Left Sidebar Home
-    if (settings.home.hideLeftSidebar) {
-      body.classList.add('dt-clean-left');
-    } else {
-      body.classList.remove('dt-clean-left');
-    }
-
-    // Right Sidebar Home
-    if (settings.home.hideRightSidebar) {
-      body.classList.add('dt-clean-right');
-    } else {
-      body.classList.remove('dt-clean-right');
-    }
+    toggleSidebarClass(body, settings.home.hideLeftSidebar, settings.home.hideRightSidebar);
   }
 }
