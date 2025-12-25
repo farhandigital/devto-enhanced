@@ -1,18 +1,34 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { settingsStorage, updateSetting } from '@/utils/storage';
   import type { ExtensionSettings } from '@/utils/types';
   import { DEFAULT_SETTINGS } from '@/utils/types';
 
   let settings: ExtensionSettings = DEFAULT_SETTINGS;
+  let unwatch: (() => void) | undefined;
 
   onMount(async () => {
-    settings = await settingsStorage.getValue();
+    try {
+      settings = await settingsStorage.getValue();
+    } catch (error) {
+      console.error('Failed to load settings from storage:', error);
+      settings = DEFAULT_SETTINGS;
+    }
     
     // Watch for external changes
-    settingsStorage.watch((newVal) => {
+    unwatch = settingsStorage.watch((newVal) => {
       if (newVal) settings = newVal;
     });
+  });
+
+  onDestroy(() => {
+    if (unwatch) {
+      try {
+        unwatch();
+      } catch (error) {
+        console.error('Failed to cleanup storage watcher:', error);
+      }
+    }
   });
 
   function handleToggle<K extends keyof ExtensionSettings>(
