@@ -4,41 +4,88 @@ export function handleEngagementButtons(settings: ExtensionSettings) {
   const isArticle = !!document.querySelector('.crayons-article__body');
   if (!isArticle) return;
 
-  const actionsContainer = document.querySelector('.crayons-article-actions');
+  const actionsContainer = document.querySelector<HTMLElement>('.crayons-article-actions');
   const titleArea = document.querySelector('.crayons-article__header__meta');
   
   if (!actionsContainer || !titleArea) return;
 
-  // We add a specific ID to track if we've moved it
-  const MOVED_ID = 'dt-moved-actions';
+  const isMoved = actionsContainer.classList.contains('dt-engagement-moved');
   
   if (settings.article.moveEngagement) {
-    // If not already moved, move it
-    if (actionsContainer.parentElement?.className !== 'crayons-article__header__meta') {
+    // Only move if not already moved
+    if (!isMoved) {
+      // Store the original parent and next sibling for restoration
+      const originalParent = actionsContainer.parentElement;
+      const originalNextSibling = actionsContainer.nextElementSibling;
+      
+      // Store references as data attributes for later restoration
+      if (originalParent) {
+        actionsContainer.dataset.originalParentSelector = getUniqueSelector(originalParent);
+        if (originalNextSibling) {
+          actionsContainer.dataset.originalNextSiblingSelector = getUniqueSelector(originalNextSibling);
+        }
+      }
+      
       actionsContainer.classList.add('dt-engagement-moved');
       
-      // Insert after the title area text but before other meta if possible, 
-      // or just append to the meta container which sits below the image/title usually.
-      // Based on HTML provided: .crayons-article__header__meta contains author info and date.
-      // We want it strictly "right below article title".
-      // The H1 is usually previous sibling to .crayons-article__header__meta or inside header.
-      
-      // Let's find the H1
+      // Find the H1 and insert after it
       const h1 = document.querySelector('h1');
       if (h1 && h1.parentElement) {
-         h1.parentElement.insertBefore(actionsContainer, h1.nextElementSibling);
+        h1.parentElement.insertBefore(actionsContainer, h1.nextElementSibling);
       }
     }
   } else {
-    // Restore to original position if we can identify it, 
-    // or typically reload is required for "undoing" complex DOM moves cleanly.
-    // For simplicity in this robust version, we remove our custom class.
-    // If users want to reset completely, a refresh is safer, but we can try removing the class.
-    actionsContainer.classList.remove('dt-engagement-moved');
-    
-    // To restore position accurately requires a placeholder which adds complexity.
-    // We will assume 'toggle off' usually happens rarely in real-time or user accepts refresh.
-    // However, purely removing the class might leave it in the wrong place visually.
-    // For MVP, we simply re-apply styles.
+    // Restore to original position if it was moved
+    if (isMoved) {
+      // Try to restore using stored selectors
+      const originalParentSelector = actionsContainer.dataset.originalParentSelector;
+      const originalNextSiblingSelector = actionsContainer.dataset.originalNextSiblingSelector;
+      
+      if (originalParentSelector) {
+        const originalParent = document.querySelector(originalParentSelector);
+        
+        if (originalParent) {
+          if (originalNextSiblingSelector) {
+            const originalNextSibling = document.querySelector(originalNextSiblingSelector);
+            originalParent.insertBefore(actionsContainer, originalNextSibling);
+          } else {
+            // Was the last child, append to end
+            originalParent.appendChild(actionsContainer);
+          }
+        }
+      }
+      
+      // Clean up
+      actionsContainer.classList.remove('dt-engagement-moved');
+      delete actionsContainer.dataset.originalParentSelector;
+      delete actionsContainer.dataset.originalNextSiblingSelector;
+    }
   }
+}
+
+// Helper function to generate a unique selector for an element
+function getUniqueSelector(element: Element): string {
+  // Try to use ID if available
+  if (element.id) {
+    return `#${element.id}`;
+  }
+  
+  // Try to use unique class combination
+  if (element.className && typeof element.className === 'string') {
+    const classes = element.className.trim().split(/\s+/).join('.');
+    if (classes && document.querySelectorAll(`.${classes}`).length === 1) {
+      return `.${classes}`;
+    }
+  }
+  
+  // Fall back to nth-child selector
+  const parent = element.parentElement;
+  if (parent) {
+    const siblings = Array.from(parent.children);
+    const index = siblings.indexOf(element);
+    const tagName = element.tagName.toLowerCase();
+    return `${getUniqueSelector(parent)} > ${tagName}:nth-child(${index + 1})`;
+  }
+  
+  return element.tagName.toLowerCase();
 }
