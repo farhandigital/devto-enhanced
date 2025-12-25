@@ -33,10 +33,27 @@ export default defineContentScript({
         clearTimeout(debounceTimer);
       }
       
-      // Only process if there are significant changes (childList mutations)
-      const hasSignificantChanges = mutations.some(
-        mutation => mutation.type === 'childList' && mutation.addedNodes.length > 0
-      );
+      // Filter out mutations caused by our own extension elements
+      const hasSignificantChanges = mutations.some(mutation => {
+        if (mutation.type !== 'childList' || mutation.addedNodes.length === 0) {
+          return false;
+        }
+        
+        // Ignore mutations within our extension's elements (prefixed with dt-)
+        const target = mutation.target as Element;
+        if (target.id?.startsWith('dt-') || target.className?.includes('dt-')) {
+          return false;
+        }
+        
+        // Ignore mutations that only add our extension elements
+        const addedExtensionElements = Array.from(mutation.addedNodes).every(node => {
+          if (node.nodeType !== Node.ELEMENT_NODE) return false;
+          const element = node as Element;
+          return element.id?.startsWith('dt-') || element.className?.includes('dt-');
+        });
+        
+        return !addedExtensionElements;
+      });
       
       if (hasSignificantChanges) {
         debounceTimer = setTimeout(() => {
