@@ -93,6 +93,17 @@ body.dt-clean-right .crayons-layout__sidebar-right > *:not(.dt-toc-container) {
   border: 1px solid var(--card-border, #eef0f1);
 }
 
+/* Dark mode support for reading stats */
+body.dark-theme .dt-reading-stats {
+  color: var(--base-60, #a3a3a3);
+}
+
+body.dark-theme .dt-stat-badge {
+  background: var(--bg-offset, #1a1a1a);
+  border-color: var(--card-border, #2d2d2d);
+  color: var(--base-80, #e5e5e5);
+}
+
 /* --- Moved Engagement Buttons --- */
 .dt-engagement-moved {
   display: flex !important;
@@ -133,4 +144,19 @@ body.dt-clean-right .crayons-layout__sidebar-right > *:not(.dt-toc-container) {
 .dt-engagement-moved .crayons-tooltip__content {
   white-space: nowrap !important;
   display: block !important;
+}
+
+/* Dark mode support for moved engagement buttons */
+body.dark-theme .dt-engagement-moved .crayons-reaction {
+  background: var(--bg-offset, #2d2d2d) !important;
+  color: var(--base-100, #f5f5f5) !important;
+  border-color: var(--card-border, #404040) !important;
+}
+
+body.dark-theme .dt-engagement-moved .crayons-reaction:hover {
+  background: var(--bg-offset-hover, #3d3d3d) !important;
+}
+
+body.dark-theme .dt-engagement-moved .crayons-reaction__count {
+  color: var(--base-80, #e5e5e5) !important;
 }
