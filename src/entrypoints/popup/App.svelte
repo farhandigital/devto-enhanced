@@ -4,9 +4,10 @@
   import type { ExtensionSettings } from '@/utils/types';
   import { DEFAULT_SETTINGS } from '@/utils/types';
 
-  let settings: ExtensionSettings = DEFAULT_SETTINGS;
+  let settings = $state<ExtensionSettings>(DEFAULT_SETTINGS);
   let unwatch: (() => void) | undefined;
-  let loadError: string | null = null;
+  let loadError = $state<string | null>(null);
+  let isLoading = $state(true);
 
   type ToggleItem<K extends keyof ExtensionSettings> = {
     key: keyof ExtensionSettings[K];
@@ -49,6 +50,8 @@
       console.error('Failed to load settings from storage:', error);
       loadError = 'Failed to load settings. Using default values.';
       settings = DEFAULT_SETTINGS;
+    } finally {
+      isLoading = false;
     }
     
     // Watch for external changes
@@ -102,25 +105,29 @@
     </div>
   {/if}
 
-  {#each toggleConfig as { section, title, items }}
-    <section>
-      <h3>{title}</h3>
-      {#each items as item}
-        {@const itemKey = item.key as keyof ExtensionSettings[typeof section]}
-        <div class="toggle-row">
-          <span class="toggle-label" id="{section}-{item.key}-label">{item.label}</span>
-          <label class="switch" for="{section}-{item.key}">
-            <input 
-              type="checkbox" 
-              id="{section}-{item.key}"
-              checked={getSettingValue(section, itemKey)} 
-              on:change={(e) => handleToggle(section, itemKey, e)}
-              aria-labelledby="{section}-{item.key}-label"
-            >
-            <span class="slider" aria-hidden="true"></span>
-          </label>
-        </div>
-      {/each}
-    </section>
-  {/each}
+  {#if isLoading}
+    <div class="loading-state">Loading settings...</div>
+  {:else}
+    {#each toggleConfig as { section, title, items }}
+      <section>
+        <h3>{title}</h3>
+        {#each items as item}
+          {@const itemKey = item.key as keyof ExtensionSettings[typeof section]}
+          <div class="toggle-row">
+            <span class="toggle-label" id="{section}-{item.key}-label">{item.label}</span>
+            <label class="switch" for="{section}-{item.key}">
+              <input 
+                type="checkbox" 
+                id="{section}-{item.key}"
+                checked={getSettingValue(section, itemKey)} 
+                onchange={(e) => handleToggle(section, itemKey, e)}
+                aria-labelledby="{section}-{item.key}-label"
+              >
+              <span class="slider" aria-hidden="true"></span>
+            </label>
+          </div>
+        {/each}
+      </section>
+    {/each}
+  {/if}
 </main>
