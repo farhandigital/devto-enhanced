@@ -38,7 +38,7 @@
         { key: 'hideRightSidebar', label: 'Hide Right Sidebar' },
       ],
     },
-  ] as const;
+  ];
 
   onMount(async () => {
     try {
