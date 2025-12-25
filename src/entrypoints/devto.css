@@ -133,3 +133,13 @@ body.dt-clean-left.dt-clean-right .crayons-layout__content {
   border-radius: 0.375rem !important;
   background: var(--bg-offset, #f5f5f5);
 }
+
+/* Fix tooltip display when moved */
+.dt-engagement-moved .crayons-tooltip__activator {
+  position: relative !important;
+}
+
+.dt-engagement-moved .crayons-tooltip__content {
+  white-space: nowrap !important;
+  display: block !important;
+}
