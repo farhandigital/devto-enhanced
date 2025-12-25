@@ -15,7 +15,8 @@ export function renderReadingStats(settings: ExtensionSettings) {
   if (!settings.article.showReadingStats) return;
 
   const text = articleBody.textContent || '';
-  const wordCount = text.trim().split(/\s+/).length;
+  const trimmedText = text.trim();
+  const wordCount = trimmedText ? trimmedText.split(/\s+/).length : 0;
   const readTime = Math.ceil(wordCount / 225); // ~225 WPM
 
   const statsContainer = document.createElement('div');
