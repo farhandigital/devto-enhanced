@@ -7,6 +7,39 @@
   let settings: ExtensionSettings = DEFAULT_SETTINGS;
   let unwatch: (() => void) | undefined;
 
+  type ToggleItem = {
+    key: string;
+    label: string;
+  };
+
+  type ToggleSection = {
+    section: keyof ExtensionSettings;
+    title: string;
+    items: ToggleItem[];
+  };
+
+  const toggleConfig: ToggleSection[] = [
+    {
+      section: 'article',
+      title: 'Article Page',
+      items: [
+        { key: 'hideLeftSidebar', label: 'Hide Left Sidebar' },
+        { key: 'hideRightSidebar', label: 'Hide Right Sidebar' },
+        { key: 'moveEngagement', label: 'Move Engagement Buttons' },
+        { key: 'showToC', label: 'Sticky Table of Contents' },
+        { key: 'showReadingStats', label: 'Reading Stats' },
+      ],
+    },
+    {
+      section: 'home',
+      title: 'Homepage',
+      items: [
+        { key: 'hideLeftSidebar', label: 'Hide Left Sidebar' },
+        { key: 'hideRightSidebar', label: 'Hide Right Sidebar' },
+      ],
+    },
+  ];
+
   onMount(async () => {
     try {
       settings = await settingsStorage.getValue();
@@ -44,60 +77,25 @@
 <main>
   <h2>Dev.to Enhancer</h2>
 
-  <section>
-    <h3>Article Page</h3>
-    <div class="toggle-row">
-      <span class="toggle-label">Hide Left Sidebar</span>
-      <label class="switch">
-        <input type="checkbox" checked={settings.article.hideLeftSidebar} on:change={(e) => handleToggle('article', 'hideLeftSidebar', e)}>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="toggle-row">
-      <span class="toggle-label">Hide Right Sidebar</span>
-      <label class="switch">
-        <input type="checkbox" checked={settings.article.hideRightSidebar} on:change={(e) => handleToggle('article', 'hideRightSidebar', e)}>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="toggle-row">
-      <span class="toggle-label">Move Engagement Buttons</span>
-      <label class="switch">
-        <input type="checkbox" checked={settings.article.moveEngagement} on:change={(e) => handleToggle('article', 'moveEngagement', e)}>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="toggle-row">
-      <span class="toggle-label">Sticky Table of Contents</span>
-      <label class="switch">
-        <input type="checkbox" checked={settings.article.showToC} on:change={(e) => handleToggle('article', 'showToC', e)}>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="toggle-row">
-      <span class="toggle-label">Reading Stats</span>
-      <label class="switch">
-        <input type="checkbox" checked={settings.article.showReadingStats} on:change={(e) => handleToggle('article', 'showReadingStats', e)}>
-        <span class="slider"></span>
-      </label>
-    </div>
-  </section>
-
-  <section>
-    <h3>Homepage</h3>
-    <div class="toggle-row">
-      <span class="toggle-label">Hide Left Sidebar</span>
-      <label class="switch">
-        <input type="checkbox" checked={settings.home.hideLeftSidebar} on:change={(e) => handleToggle('home', 'hideLeftSidebar', e)}>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="toggle-row">
-      <span class="toggle-label">Hide Right Sidebar</span>
-      <label class="switch">
-        <input type="checkbox" checked={settings.home.hideRightSidebar} on:change={(e) => handleToggle('home', 'hideRightSidebar', e)}>
-        <span class="slider"></span>
-      </label>
-    </div>
-  </section>
+  {#each toggleConfig as { section, title, items }}
+    <section>
+      <h3>{title}</h3>
+      {#each items as item}
+        <div class="toggle-row">
+          <span class="toggle-label" id="{section}-{item.key}-label">{item.label}</span>
+          <label class="switch" for="{section}-{item.key}">
+            <input 
+              type="checkbox" 
+              id="{section}-{item.key}"
+              checked={settings[section][item.key]} 
+              on:change={(e) => handleToggle(section, item.key, e)}
+              aria-labelledby="{section}-{item.key}-label"
+              aria-checked={settings[section][item.key]}
+            >
+            <span class="slider" aria-hidden="true"></span>
+          </label>
+        </div>
+      {/each}
+    </section>
+  {/each}
 </main>
