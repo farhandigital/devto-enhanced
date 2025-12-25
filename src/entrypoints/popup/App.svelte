@@ -104,7 +104,6 @@
               checked={getSettingValue(section, itemKey)} 
               on:change={(e) => handleToggle(section, itemKey, e)}
               aria-labelledby="{section}-{item.key}-label"
-              aria-checked={getSettingValue(section, itemKey)}
             >
             <span class="slider" aria-hidden="true"></span>
           </label>
