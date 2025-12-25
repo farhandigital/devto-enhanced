@@ -114,6 +114,17 @@ body.dt-clean-left.dt-clean-right .crayons-layout__content {
   padding: 0 !important;
 }
 
+/* Override grid layout to flex horizontal */
+.dt-engagement-moved .crayons-article-actions__inner,
+.crayons-article-actions.dt-engagement-moved .crayons-article-actions__inner {
+  display: flex !important;
+  grid-gap: unset !important;
+  gap: 0.5rem !important;
+  grid-template-columns: unset !important;
+  grid-auto-flow: unset !important;
+  justify-content: flex-start !important;
+}
+
 /* Adjust button styles when horizontal */
 .dt-engagement-moved .crayons-reaction {
   width: auto !important;
