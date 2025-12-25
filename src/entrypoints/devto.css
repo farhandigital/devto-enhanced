@@ -1,11 +1,19 @@
 /* --- Layout Cleaning Classes --- */
 
 /* Hide Left Sidebar - Hide original content inside sidebar, not the sidebar itself */
+body.dt-clean-left .crayons-layout__sidebar-left {
+  min-width: 240px; /* Maintain sidebar width */
+}
+
 body.dt-clean-left .crayons-layout__sidebar-left > * {
   display: none !important;
 }
 
 /* Hide Right Sidebar - Hide original content inside sidebar, not the sidebar itself */
+body.dt-clean-right .crayons-layout__sidebar-right {
+  min-width: 320px; /* Maintain sidebar width to match Dev.to's default */
+}
+
 body.dt-clean-right .crayons-layout__sidebar-right > *:not(.dt-toc-container) {
   display: none !important;
 }
