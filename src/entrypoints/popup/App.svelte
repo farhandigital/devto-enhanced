@@ -6,6 +6,7 @@
 
   let settings: ExtensionSettings = DEFAULT_SETTINGS;
   let unwatch: (() => void) | undefined;
+  let loadError: string | null = null;
 
   type ToggleItem<K extends keyof ExtensionSettings> = {
     key: keyof ExtensionSettings[K];
@@ -43,14 +44,19 @@
   onMount(async () => {
     try {
       settings = await settingsStorage.getValue();
+      loadError = null; // Clear error on successful load
     } catch (error) {
       console.error('Failed to load settings from storage:', error);
+      loadError = 'Failed to load settings. Using default values.';
       settings = DEFAULT_SETTINGS;
     }
     
     // Watch for external changes
     unwatch = settingsStorage.watch((newVal) => {
-      if (newVal) settings = newVal;
+      if (newVal) {
+        settings = newVal;
+        loadError = null; // Clear error when settings successfully update
+      }
     });
   });
 
@@ -89,6 +95,12 @@
 
 <main>
   <h2>Dev.to Enhancer</h2>
+
+  {#if loadError}
+    <div class="error-banner" role="alert">
+      {loadError}
+    </div>
+  {/if}
 
   {#each toggleConfig as { section, title, items }}
     <section>
