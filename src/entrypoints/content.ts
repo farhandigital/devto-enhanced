@@ -81,9 +81,9 @@ export default defineContentScript({
         if (mutation.type === 'childList') {
           // Look for changes to article content or stories index (main page structure)
           const target = mutation.target as Element;
-          const isMainContent = target.id === Selectors.mainContent.substring(1) || 
-                               target.classList.contains(Selectors.home.storiesIndex.substring(1)) ||
-                               target.classList.contains(Selectors.article.body.substring(1));
+          const isMainContent = target.matches(Selectors.mainContent) || 
+                               target.matches(Selectors.home.storiesIndex) ||
+                               target.matches(Selectors.article.body);
           if (isMainContent) return true;
         }
         
