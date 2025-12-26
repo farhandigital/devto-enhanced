@@ -48,11 +48,10 @@ export default defineContentScript({
       }
     });
 
-    // 3. Handle SPA navigation with wxt:locationchange event
-    // This fires on every URL change, even without page reloads
+    // 3. Handle SPA navigation with wxt:locationchange event specifically for cleaning up smooth scroll state
+    // We could've used URL watcher to replace the entire mutation observer, but unfortunately the event doesn't fire fast enough to prevent layout shifts on navigation.
     ctx.addEventListener(window, 'wxt:locationchange', () => {
       updateSmoothScrollState();
-      runFeatures(settings);
     });
 
     // 4. Handle Dev.to SPA navigation (InstantClick/Turbo)
