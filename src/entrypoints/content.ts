@@ -58,9 +58,14 @@ export default defineContentScript({
       if (significantMutation) {
         console.log('[dt-enhanced] Significant mutation detected');
         applyLayoutCleaning(settings);
+        
+        // Also apply engagement buttons immediately on article pages to avoid blinking
+        if (document.querySelector('.crayons-article__body')) {
+          handleEngagementButtons(settings);
+        }
       }
       
-      // Debounce other features regardless
+      // Debounce other features (reading stats, TOC)
       if (state.debounceTimer) {
         clearTimeout(state.debounceTimer);
       }
@@ -69,7 +74,6 @@ export default defineContentScript({
         console.log('[dt-enhanced] Debounce timeout - running other features');
         // Article specific features
         if (document.querySelector('.crayons-article__body')) {
-          handleEngagementButtons(settings);
           renderReadingStats(settings);
           renderTableOfContents(settings);
         }
