@@ -27,6 +27,13 @@ const features: Feature[] = [];
  * Register a feature with the extension
  */
 export function registerFeature(feature: Feature): void {
+  const existing = features.find((f) => f.name === feature.name);
+  if (existing) {
+    console.warn(
+      `Feature "${feature.name}" is already registered. Skipping duplicate.`
+    );
+    return;
+  }
   features.push(feature);
 }
 
@@ -55,11 +62,19 @@ export function executeFeatures(
 ): void {
   // Execute global features first
   getFeaturesForContext('global').forEach((feature) => {
-    feature.execute(settings);
+    try {
+      feature.execute(settings);
+    } catch (error) {
+      console.error(`Failed to execute feature "${feature.name}":`, error);
+    }
   });
-  
+
   // Then execute context-specific features
   getFeaturesForContext(pageType).forEach((feature) => {
-    feature.execute(settings);
+    try {
+      feature.execute(settings);
+    } catch (error) {
+      console.error(`Failed to execute feature "${feature.name}":`, error);
+    }
   });
 }
