@@ -82,61 +82,38 @@ function setupActiveHeadingObserver(
   headings: NodeListOf<Element>,
   tocContainer: HTMLElement
 ) {
-  // Create observer that checks position relative to top of viewport
-  headingObserver = new IntersectionObserver(
-    (entries) => {
-      // Find the active heading: the last one that is above or at the trigger point
-      let activeHeading: Element | null = null;
-
-      // Check all headings to find which one should be active
-      for (const heading of Array.from(headings)) {
-        const rect = heading.getBoundingClientRect();
-        // If heading is above the 20% mark (already scrolled past), it's a candidate
-        // We want the last (bottommost) heading that's above this threshold
-        if (rect.top <= window.innerHeight * 0.2) {
-          activeHeading = heading;
-        }
-      }
-
-      // Update ToC highlighting
-      const allLinks = tocContainer.querySelectorAll('.dt-toc-link');
-      allLinks.forEach((link) => {
-        link.classList.remove('dt-toc-active');
-      });
-
-      if (activeHeading) {
-        const activeLink = tocContainer.querySelector(
-          `a[href="#${activeHeading.id}"]`
-        );
-        if (activeLink) {
-          activeLink.classList.add('dt-toc-active');
-        }
-      }
-    },
-    {
-      // Trigger observer whenever any heading crosses any boundary
-      threshold: [0, 0.5, 1],
-    }
-  );
-
-  // Observe all headings
-  headings.forEach((heading) => {
-    headingObserver!.observe(heading);
-  });
-  
-  // Also trigger an immediate update on initial render
-  headingObserver.takeRecords();
-  
-  // Manually trigger initial highlight check
-  setTimeout(() => {
+  const updateActiveHeading = () => {
     let activeHeading: Element | null = null;
+    const threshold = window.innerHeight * 0.2; // 20% from top
+
+    // Check all headings to find which one should be active
     for (const heading of Array.from(headings)) {
       const rect = heading.getBoundingClientRect();
-      if (rect.top <= window.innerHeight * 0.2) {
+      
+      // A heading is a candidate if:
+      // 1. It's at or past the threshold (already scrolled up), OR
+      // 2. It's approaching/at the threshold from below (about to cross)
+      // We want the last heading that satisfies this condition
+      if (rect.top <= threshold) {
         activeHeading = heading;
       }
     }
     
+    // If no heading has crossed the threshold yet, check if we're at the very top
+    // In that case, make the first heading active if we're near the start of the article
+    if (!activeHeading && headings.length > 0) {
+      const firstHeadingRect = headings[0].getBoundingClientRect();
+      if (firstHeadingRect.top > 0 && firstHeadingRect.top < window.innerHeight) {
+        activeHeading = headings[0];
+      }
+    }
+
+    // Update ToC highlighting
+    const allLinks = tocContainer.querySelectorAll('.dt-toc-link');
+    allLinks.forEach((link) => {
+      link.classList.remove('dt-toc-active');
+    });
+
     if (activeHeading) {
       const activeLink = tocContainer.querySelector(
         `a[href="#${activeHeading.id}"]`
@@ -145,5 +122,26 @@ function setupActiveHeadingObserver(
         activeLink.classList.add('dt-toc-active');
       }
     }
-  }, 100);
+  };
+
+  // Create observer with root margin to trigger in the top 20% zone
+  headingObserver = new IntersectionObserver(
+    (entries) => {
+      // Trigger update whenever any heading crosses into/out of the zone
+      updateActiveHeading();
+    },
+    {
+      // Trigger when headings cross into the top 20% zone
+      rootMargin: '-20% 0px -80% 0px',
+      threshold: 0,
+    }
+  );
+
+  // Observe all headings
+  headings.forEach((heading) => {
+    headingObserver!.observe(heading);
+  });
+  
+  // Trigger initial highlight
+  setTimeout(updateActiveHeading, 100);
 }
