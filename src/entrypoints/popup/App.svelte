@@ -23,6 +23,14 @@
 
   const toggleConfig: (ToggleSection<'article'> | ToggleSection<'home'>)[] = [
     {
+      section: 'home' as const,
+      title: 'Homepage',
+      items: [
+        { key: 'hideLeftSidebar', label: 'Hide Left Sidebar' },
+        { key: 'hideRightSidebar', label: 'Hide Right Sidebar' },
+      ],
+    },
+    {
       section: 'article' as const,
       title: 'Article Page',
       items: [
@@ -31,14 +39,6 @@
         { key: 'moveEngagement', label: 'Move Engagement Buttons' },
         { key: 'showToC', label: 'Sticky Table of Contents' },
         { key: 'showReadingStats', label: 'Reading Stats' },
-      ],
-    },
-    {
-      section: 'home' as const,
-      title: 'Homepage',
-      items: [
-        { key: 'hideLeftSidebar', label: 'Hide Left Sidebar' },
-        { key: 'hideRightSidebar', label: 'Hide Right Sidebar' },
       ],
     },
   ];
