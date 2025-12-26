@@ -1,8 +1,9 @@
 import type { ExtensionSettings } from '@/utils/types';
+import { Selectors } from '@/utils/selectors';
 
 export function renderReadingStats(settings: ExtensionSettings) {
-  const articleBody = document.querySelector('#article-body');
-  const title = document.querySelector('h1');
+  const articleBody = document.querySelector(Selectors.article.bodyId);
+  const title = document.querySelector(Selectors.article.title);
   const existingStats = document.getElementById('dt-reading-stats');
 
   if (!articleBody || !title) return;

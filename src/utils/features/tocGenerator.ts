@@ -1,12 +1,13 @@
 import type { ExtensionSettings } from '@/utils/types';
+import { Selectors } from '@/utils/selectors';
 
 // Store the observer globally so we can disconnect it on re-render
 let headingObserver: IntersectionObserver | null = null;
 
 export function renderTableOfContents(settings: ExtensionSettings) {
   const existingToC = document.getElementById('dt-toc');
-  const rightSidebar = document.querySelector('.crayons-layout__sidebar-right');
-  const articleBody = document.querySelector('#article-body');
+  const rightSidebar = document.querySelector(Selectors.layout.rightSidebar);
+  const articleBody = document.querySelector(Selectors.article.bodyId);
 
   // Clean up existing observer
   if (headingObserver) {
@@ -24,10 +25,10 @@ export function renderTableOfContents(settings: ExtensionSettings) {
   }
 
   // Find the article title from header#main-title
-  const titleHeading = document.querySelector('header#main-title h1');
+  const titleHeading = document.querySelector(Selectors.article.titleHeader);
   
   // Find article body headings
-  const articleHeadings = articleBody.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  const articleHeadings = articleBody.querySelectorAll(Selectors.article.headings);
   
   // Combine title with article headings
   const allHeadings: Element[] = [];
