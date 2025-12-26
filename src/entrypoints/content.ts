@@ -6,6 +6,12 @@ import { settingsStorage } from '@/utils/storage';
 import type { ExtensionSettings } from '@/utils/types';
 import './devto.css';
 
+/** Normalize PageDetector result to feature registry context */
+function getFeatureContext(): 'article' | 'home' | 'other' {
+  const pageType = PageDetector.getPageType();
+  return pageType === 'article' || pageType === 'home' ? pageType : 'other';
+}
+
 const state = {
   debounceTimer: null as ReturnType<typeof setTimeout> | null,
   observer: null as MutationObserver | null,
@@ -90,8 +96,7 @@ export default defineContentScript({
       });
       
       if (significantMutation) {
-        const pageType = PageDetector.getPageType();
-        executeFeatures(pageType === 'article' || pageType === 'home' ? pageType : 'other', settings);
+        executeFeatures(getFeatureContext(), settings);
       }
     });
     
@@ -107,6 +112,5 @@ export default defineContentScript({
 });
 
 function runFeatures(settings: ExtensionSettings) {
-  const pageType = PageDetector.getPageType();
-  executeFeatures(pageType === 'article' || pageType === 'home' ? pageType : 'other', settings);
+  executeFeatures(getFeatureContext(), settings);
 }
