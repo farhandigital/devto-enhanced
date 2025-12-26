@@ -15,6 +15,8 @@ export function applyLayoutCleaning(settings: ExtensionSettings) {
   const isArticle = document.body.classList.contains('crayons-layout--article') || document.querySelector('.crayons-article__body') !== null;
   const isHome = document.querySelector('.stories-index') !== null;
 
+  console.log('[dt-enhanced] Layout cleaning:', { isArticle, isHome, hideLeftSidebar: settings.home.hideLeftSidebar, hideRightSidebar: settings.home.hideRightSidebar });
+
   // Apply global settings (all pages)
   document.body.classList.toggle('dt-hide-subforem', settings.global.hideSubforemSwitcher);
 
@@ -26,4 +28,6 @@ export function applyLayoutCleaning(settings: ExtensionSettings) {
     // Remove classes on pages where layout cleaning doesn't apply (e.g., user profiles, tags, search)
     toggleSidebarClass(document.body, false, false);
   }
+
+  console.log('[dt-enhanced] Classes after cleanup:', document.body.className);
 }
