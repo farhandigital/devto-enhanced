@@ -56,7 +56,6 @@ export default defineContentScript({
       });
       
       if (significantMutation) {
-        console.log('[dt-enhanced] Significant mutation detected');
         applyLayoutCleaning(settings);
         
         // Also apply engagement buttons immediately on article pages to avoid blinking
@@ -71,7 +70,6 @@ export default defineContentScript({
       }
       
       state.debounceTimer = setTimeout(() => {
-        console.log('[dt-enhanced] Debounce timeout - running other features');
         // Article specific features
         if (document.querySelector('.crayons-article__body')) {
           renderReadingStats(settings);
@@ -89,7 +87,6 @@ export default defineContentScript({
       attributeFilter: ['class'],
       characterData: false
     });
-    console.log('[dt-enhanced] Mutation observer set up on document root');
   },
 });
 
