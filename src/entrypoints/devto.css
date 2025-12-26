@@ -83,6 +83,17 @@ body.dt-clean-right .crayons-layout__sidebar-right > *:not(.dt-toc-container) {
   border-left-color: var(--accent-brand, #3b49df);
 }
 
+/* Active section highlight */
+.dt-toc-link.dt-toc-active {
+  color: var(--accent-brand, #3b49df);
+  border-left-color: var(--accent-brand, #3b49df);
+  font-weight: 600;
+  background: var(--accent-brand-lighter, rgba(59, 73, 223, 0.05));
+  margin-left: -0.5rem;
+  padding-left: 1rem;
+  border-radius: 0.25rem;
+}
+
 /* Nesting levels */
 .dt-toc-level-1 { margin-left: 0; }
 .dt-toc-level-2 { margin-left: 0.5rem; }
