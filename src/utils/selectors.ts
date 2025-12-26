@@ -12,7 +12,6 @@ export const Selectors = {
   article: {
     body: '.crayons-article__body',
     bodyId: '#article-body',
-    title: 'h1',
     titleHeader: 'header#main-title h1',
     headings: 'h1, h2, h3, h4, h5, h6',
     actions: '.crayons-article-actions',

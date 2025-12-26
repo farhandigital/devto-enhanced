@@ -3,7 +3,7 @@ import { Selectors } from '@/utils/selectors';
 
 export function renderReadingStats(settings: ExtensionSettings) {
   const articleBody = document.querySelector(Selectors.article.bodyId);
-  const title = document.querySelector(Selectors.article.title);
+  const title = document.querySelector(Selectors.article.titleHeader);
   const existingStats = document.getElementById('dt-reading-stats');
 
   if (!articleBody || !title) return;

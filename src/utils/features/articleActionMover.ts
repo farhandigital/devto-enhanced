@@ -27,9 +27,9 @@ export function handleEngagementButtons(settings: ExtensionSettings) {
       }
       
       actionsContainer.classList.add('dt-engagement-moved');
-      
+
       // Find the H1 and insert after it
-      const h1 = document.querySelector(Selectors.article.title);
+      const h1 = document.querySelector(Selectors.article.titleHeader);
       if (h1 && h1.parentElement) {
         h1.parentElement.insertBefore(actionsContainer, h1.nextElementSibling);
       }
