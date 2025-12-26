@@ -50,7 +50,7 @@ function extractFormattedText(element: Element): string {
             parts.push(el.textContent || '');
           }
           break;
-        case 'pre':
+        case 'pre': {
           // Code block
           const codeEl = el.querySelector('code');
           if (codeEl) {
@@ -59,6 +59,7 @@ function extractFormattedText(element: Element): string {
             parts.push('\n' + (el.textContent || '') + '\n');
           }
           break;
+        }
         case 'ul':
         case 'ol':
           parts.push('\n' + extractList(el, tagName) + '\n');
@@ -67,7 +68,7 @@ function extractFormattedText(element: Element): string {
           // Handled by parent ul/ol
           parts.push(extractFormattedText(el));
           break;
-        case 'a':
+        case 'a': {
           const href = el.getAttribute('href');
           const linkText = extractFormattedText(el);
           if (href && href !== '#' && !href.startsWith('#')) {
@@ -76,13 +77,15 @@ function extractFormattedText(element: Element): string {
             parts.push(linkText);
           }
           break;
+        }
         case 'hr':
           parts.push('\n---\n');
           break;
-        case 'blockquote':
+        case 'blockquote': {
           const quoteText = extractFormattedText(el);
           parts.push('\n> ' + quoteText.split('\n').join('\n> ') + '\n');
           break;
+        }
         default:
           // For other elements, recursively extract
           parts.push(extractFormattedText(el));
