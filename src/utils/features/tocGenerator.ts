@@ -23,9 +23,20 @@ export function renderTableOfContents(settings: ExtensionSettings) {
     return;
   }
 
-  // Find headings
-  const headings = articleBody.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  if (headings.length === 0) return;
+  // Find the article title from header#main-title
+  const titleHeading = document.querySelector('header#main-title h1');
+  
+  // Find article body headings
+  const articleHeadings = articleBody.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  
+  // Combine title with article headings
+  const allHeadings: Element[] = [];
+  if (titleHeading) {
+    allHeadings.push(titleHeading);
+  }
+  allHeadings.push(...Array.from(articleHeadings));
+  
+  if (allHeadings.length === 0) return;
 
   // If no sidebar exists, we can't inject the ToC
   if (!rightSidebar) return;
@@ -46,7 +57,7 @@ export function renderTableOfContents(settings: ExtensionSettings) {
   const list = document.createElement('ul');
   list.className = 'dt-toc-list';
 
-  headings.forEach((heading, index) => {
+  allHeadings.forEach((heading, index) => {
     // Ensure heading has ID
     if (!heading.id) {
       heading.id = `dt-heading-${index}`;
@@ -75,11 +86,11 @@ export function renderTableOfContents(settings: ExtensionSettings) {
   document.documentElement.classList.add('dt-smooth-scroll-enabled');
 
   // Setup intersection observer for active section highlighting
-  setupActiveHeadingObserver(headings, tocContainer);
+  setupActiveHeadingObserver(allHeadings, tocContainer);
 }
 
 function setupActiveHeadingObserver(
-  headings: NodeListOf<Element>,
+  headings: Element[],
   tocContainer: HTMLElement
 ) {
   const updateActiveHeading = () => {
