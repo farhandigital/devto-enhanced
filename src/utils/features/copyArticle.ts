@@ -129,7 +129,7 @@ function extractArticleContent(): string {
   const metadata: string[] = [];
   
   // Extract author
-  const authorEl = document.querySelector('header#main-title .crayons-link.fw-bold');
+  const authorEl = document.querySelector(Selectors.article.authorLink);
   if (authorEl) {
     const authorName = authorEl.textContent?.trim();
     const authorHref = authorEl.getAttribute('href');
@@ -189,10 +189,10 @@ export function renderCopyArticleButton(settings: ExtensionSettings) {
   if (!settings.article.showCopyButton) return;
   
   // Find insertion point (after tags or after title)
-  const titleHeader = document.querySelector('header#main-title');
+  const titleHeader = document.querySelector(Selectors.article.titleHeaderContainer);
   if (!titleHeader) return;
   
-  const tagsContainer = titleHeader.querySelector('.spec__tags');
+  const tagsContainer = titleHeader.querySelector(Selectors.article.tagsContainer);
   const insertionPoint = tagsContainer || titleHeader.querySelector('h1');
   
   if (!insertionPoint) return;
