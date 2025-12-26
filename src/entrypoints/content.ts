@@ -34,9 +34,25 @@ export default defineContentScript({
 
     // 3. Handle Dev.to SPA navigation (InstantClick/Turbo)
     state.observer = new MutationObserver((mutations) => {
+      // Filter out mutations from our injected elements to prevent infinite loops
+      const relevantMutations = mutations.filter(mutation => {
+        const target = mutation.target as Element;
+        // Skip any mutations that are within our TOC or reading stats containers
+        if (target.id === 'dt-toc' || target.closest('#dt-toc') || 
+            target.id === 'dt-reading-stats' || target.closest('#dt-reading-stats')) {
+          return false;
+        }
+        return true;
+      });
+
+      // If no relevant mutations, skip processing
+      if (relevantMutations.length === 0) {
+        return;
+      }
+
       // Only apply layout cleaning for significant mutations (page transitions)
       // Skip mutations from lazy-loaded content, ads, or irrelevant elements
-      const significantMutation = mutations.some(mutation => {
+      const significantMutation = relevantMutations.some(mutation => {
         // Check for page structure changes (main content replacements)
         if (mutation.type === 'childList') {
           // Look for changes to article content or stories index (main page structure)
@@ -61,22 +77,11 @@ export default defineContentScript({
         // Also apply engagement buttons immediately on article pages to avoid blinking
         if (document.querySelector('.crayons-article__body')) {
           handleEngagementButtons(settings);
-        }
-      }
-      
-      // Debounce other features (reading stats, TOC)
-      if (state.debounceTimer) {
-        clearTimeout(state.debounceTimer);
-      }
-      
-      state.debounceTimer = setTimeout(() => {
-        // Article specific features
-        if (document.querySelector('.crayons-article__body')) {
+          // Only re-render TOC/reading stats on significant page changes
           renderReadingStats(settings);
           renderTableOfContents(settings);
         }
-        state.debounceTimer = null;
-      }, 150);
+      }
     });
     
     // Observe at document level but with filtered handling
