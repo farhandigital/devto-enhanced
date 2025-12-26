@@ -122,6 +122,28 @@ function extractArticleContent(): string {
     parts.push('# ' + titleEl.textContent?.trim() + '\n');
   }
   
+  // Extract metadata (author and URL)
+  const metadata: string[] = [];
+  
+  // Extract author
+  const authorEl = document.querySelector('header#main-title .crayons-link.fw-bold');
+  if (authorEl) {
+    const authorName = authorEl.textContent?.trim();
+    const authorHref = authorEl.getAttribute('href');
+    if (authorName && authorHref) {
+      const authorUrl = authorHref.startsWith('http') ? authorHref : `https://dev.to${authorHref}`;
+      metadata.push(`**Author:** [${authorName}](${authorUrl})`);
+    }
+  }
+  
+  // Extract article URL
+  const articleUrl = window.location.href;
+  metadata.push(`**URL:** ${articleUrl}`);
+  
+  if (metadata.length > 0) {
+    parts.push(metadata.join('  \n') + '\n');
+  }
+  
   // Extract article body
   const articleBody = document.querySelector(Selectors.article.bodyId);
   if (articleBody) {
