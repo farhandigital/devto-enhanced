@@ -12,11 +12,27 @@ const state = {
   initialized: false,
 };
 
+function isArticlePage(): boolean {
+  return !!document.querySelector('.crayons-article__body');
+}
+
+function updateSmoothScrollState(): void {
+  const isArticle = isArticlePage();
+  
+  if (isArticle) {
+    // Enable smooth scroll on article pages (after ToC is ready)
+    // The actual enabling happens in tocGenerator when ToC is rendered
+  } else {
+    // Disable smooth scroll on non-article pages
+    document.documentElement.classList.remove('dt-smooth-scroll-enabled');
+  }
+}
+
 export default defineContentScript({
   matches: ['https://dev.to/*'],
   cssInjectionMode: 'manifest', 
   
-  async main() {
+  async main(ctx) {
     if (state.initialized) return;
     state.initialized = true;
 
@@ -32,7 +48,14 @@ export default defineContentScript({
       }
     });
 
-    // 3. Handle Dev.to SPA navigation (InstantClick/Turbo)
+    // 3. Handle SPA navigation with wxt:locationchange event
+    // This fires on every URL change, even without page reloads
+    ctx.addEventListener(window, 'wxt:locationchange', () => {
+      updateSmoothScrollState();
+      runFeatures(settings);
+    });
+
+    // 4. Handle Dev.to SPA navigation (InstantClick/Turbo)
     state.observer = new MutationObserver((mutations) => {
       // Filter out mutations from our injected elements to prevent infinite loops
       const relevantMutations = mutations.filter(mutation => {
