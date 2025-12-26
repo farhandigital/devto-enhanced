@@ -6,11 +6,20 @@ import { settingsStorage } from '@/utils/storage';
 import type { ExtensionSettings } from '@/utils/types';
 import './devto.css';
 
+const state = {
+  debounceTimer: null as ReturnType<typeof setTimeout> | null,
+  observer: null as MutationObserver | null,
+  initialized: false,
+};
+
 export default defineContentScript({
   matches: ['https://dev.to/*'],
   cssInjectionMode: 'manifest', 
   
   async main() {
+    if (state.initialized) return;
+    state.initialized = true;
+
     // 1. Initial Load
     let settings = await settingsStorage.getValue();
     runFeatures(settings);
@@ -24,51 +33,23 @@ export default defineContentScript({
     });
 
     // 3. Handle Dev.to SPA navigation (InstantClick/Turbo)
-    // Dev.to pages change without full reload. We observe for significant changes.
-    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-    
-    const observer = new MutationObserver((mutations) => {
+    state.observer = new MutationObserver(() => {
       // Clear existing timer to debounce rapid mutations
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
+      if (state.debounceTimer) {
+        clearTimeout(state.debounceTimer);
       }
       
-      // Filter out mutations caused by our own extension elements
-      const hasSignificantChanges = mutations.some(mutation => {
-        if (mutation.type !== 'childList' || mutation.addedNodes.length === 0) {
-          return false;
-        }
-        
-        // Ignore mutations within our extension's elements (prefixed with dt-)
-        const target = mutation.target as Element;
-        if (target.id?.startsWith('dt-') || target.className?.includes('dt-')) {
-          return false;
-        }
-        
-        // Ignore mutations that only add our extension elements
-        const addedExtensionElements = Array.from(mutation.addedNodes).every(node => {
-          if (node.nodeType !== Node.ELEMENT_NODE) return false;
-          const element = node as Element;
-          return element.id?.startsWith('dt-') || element.className?.includes('dt-');
-        });
-        
-        return !addedExtensionElements;
-      });
-      
-      if (hasSignificantChanges) {
-        debounceTimer = setTimeout(() => {
-          runFeatures(settings);
-          debounceTimer = null;
-        }, 150); // 150ms debounce delay
-      }
+      state.debounceTimer = setTimeout(() => {
+        runFeatures(settings);
+        state.debounceTimer = null;
+      }, 100); // 100ms debounce delay
     });
     
     // Observe the main content container or body if not found
     const targetNode = document.querySelector('#main-content') || document.body;
-    observer.observe(targetNode, { 
+    state.observer.observe(targetNode, { 
       childList: true, 
       subtree: true,
-      // Only watch for added/removed nodes, not attributes or character data
       attributes: false,
       characterData: false
     });
