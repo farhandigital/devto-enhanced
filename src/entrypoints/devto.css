@@ -227,6 +227,52 @@ body.dark-theme .dt-engagement-moved .crayons-reaction__count {
   flex-shrink: 0;
 }
 
+/* Success state */
+.dt-copy-article-btn.dt-copy-success {
+  background: #10b981;
+  animation: dt-copy-pulse 0.3s ease-out;
+}
+
+.dt-copy-article-btn.dt-copy-success:hover {
+  background: #059669;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+}
+
+/* Error state */
+.dt-copy-article-btn.dt-copy-error {
+  background: #ef4444;
+  animation: dt-copy-shake 0.4s ease-out;
+}
+
+.dt-copy-article-btn.dt-copy-error:hover {
+  background: #dc2626;
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+}
+
+@keyframes dt-copy-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes dt-copy-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
 /* Dark mode support for copy button */
 body.dark-theme .dt-copy-article-btn {
   background: var(--accent-brand, #6b7aff);
@@ -236,4 +282,20 @@ body.dark-theme .dt-copy-article-btn {
 body.dark-theme .dt-copy-article-btn:hover {
   background: var(--accent-brand-lighter, #8b99ff);
   box-shadow: 0 4px 6px rgba(107, 122, 255, 0.3);
+}
+
+body.dark-theme .dt-copy-article-btn.dt-copy-success {
+  background: #10b981;
+}
+
+body.dark-theme .dt-copy-article-btn.dt-copy-success:hover {
+  background: #059669;
+}
+
+body.dark-theme .dt-copy-article-btn.dt-copy-error {
+  background: #ef4444;
+}
+
+body.dark-theme .dt-copy-article-btn.dt-copy-error:hover {
+  background: #dc2626;
 }

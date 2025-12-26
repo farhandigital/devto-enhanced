@@ -150,55 +150,6 @@ async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 /**
- * Shows a temporary notification
- */
-function showNotification(message: string, success: boolean = true) {
-  const notification = document.createElement('div');
-  notification.className = 'dt-copy-notification';
-  notification.textContent = message;
-  notification.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 12px 20px;
-    background: ${success ? '#10b981' : '#ef4444'};
-    color: white;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    z-index: 10000;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    animation: dt-slide-in 0.3s ease-out;
-  `;
-  
-  // Add animation keyframes if not already added
-  if (!document.querySelector('#dt-copy-notification-styles')) {
-    const style = document.createElement('style');
-    style.id = 'dt-copy-notification-styles';
-    style.textContent = `
-      @keyframes dt-slide-in {
-        from {
-          transform: translateX(400px);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-  
-  document.body.appendChild(notification);
-  
-  setTimeout(() => {
-    notification.style.animation = 'dt-slide-in 0.3s ease-out reverse';
-    setTimeout(() => notification.remove(), 300);
-  }, 2500);
-}
-
-/**
  * Renders the copy article button
  */
 export function renderCopyArticleButton(settings: ExtensionSettings) {
@@ -238,9 +189,48 @@ export function renderCopyArticleButton(settings: ExtensionSettings) {
     const success = await copyToClipboard(content);
     
     if (success) {
-      showNotification('✓ Article copied to clipboard!');
+      // Change button to success state
+      button.classList.add('dt-copy-success');
+      button.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        Copied!
+      `;
+      
+      // Reset button after 2 seconds
+      setTimeout(() => {
+        button.classList.remove('dt-copy-success');
+        button.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Copy Article
+        `;
+      }, 2000);
     } else {
-      showNotification('✗ Failed to copy article', false);
+      // Show error state briefly
+      button.classList.add('dt-copy-error');
+      button.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+        Failed
+      `;
+      
+      setTimeout(() => {
+        button.classList.remove('dt-copy-error');
+        button.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Copy Article
+        `;
+      }, 2000);
     }
   };
   
