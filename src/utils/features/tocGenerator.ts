@@ -131,6 +131,12 @@ function setupActiveHeadingObserver(
       );
       if (activeLink) {
         activeLink.classList.add('dt-toc-active');
+        
+        // Auto-scroll the ToC to keep the active link visible
+        const tocList = tocContainer.querySelector('.dt-toc-list') as HTMLElement;
+        if (tocList) {
+          activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
       }
     }
   };
