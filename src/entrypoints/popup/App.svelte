@@ -3,6 +3,7 @@
   import { settingsStorage, updateSetting } from '@/utils/storage';
   import type { ExtensionSettings } from '@/utils/types';
   import { DEFAULT_SETTINGS } from '@/utils/types';
+  import iconUrl from '/icon.png';
 
   let settings = $state<ExtensionSettings>(DEFAULT_SETTINGS);
   let unwatch: (() => void) | undefined;
@@ -97,7 +98,10 @@
 </script>
 
 <main>
-  <h2>Dev.to Enhancer</h2>
+  <div class="header">
+    <img src={iconUrl} alt="Dev.to Enhancer" class="logo" />
+    <h2>Dev.to Enhancer</h2>
+  </div>
 
   {#if loadError}
     <div class="error-banner" role="alert">
