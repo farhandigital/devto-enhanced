@@ -93,74 +93,69 @@ function setupActiveHeadingObserver(
   headings: Element[],
   tocContainer: HTMLElement
 ) {
-  // Track the state of each heading: above the zone, in the zone, or below it
-  const headingStates = new Map<Element, 'above' | 'in-zone' | 'below'>();
-  
-  // Initialize all as below
-  headings.forEach(h => headingStates.set(h, 'below'));
-  
-  const updateTocHighlight = (activeHeading: Element | null) => {
-    const allLinks = tocContainer.querySelectorAll('.dt-toc-link');
-    allLinks.forEach(link => link.classList.remove('dt-toc-active'));
-    
-    if (activeHeading) {
-      const activeLink = tocContainer.querySelector(`a[href="#${activeHeading.id}"]`);
-      if (activeLink) {
-        activeLink.classList.add('dt-toc-active');
-        activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-  };
-  
-  const determineActiveHeading = () => {
+  const updateActiveHeading = () => {
     let activeHeading: Element | null = null;
-    
-    // Find the last heading that's in the zone or has passed above it
+    const threshold = window.innerHeight * 0.2; // 20% from top
+
+    // Check all headings to find which one should be active
+    // This is the reliable approach that checks actual positions
     for (const heading of headings) {
-      const state = headingStates.get(heading);
-      if (state === 'in-zone' || state === 'above') {
-        activeHeading = heading; // Keep updating to get the last one
+      const rect = heading.getBoundingClientRect();
+      
+      // A heading is a candidate if it's at or past the threshold
+      // We want the last heading that satisfies this condition
+      if (rect.top <= threshold) {
+        activeHeading = heading;
       }
     }
     
     // Edge case: first heading is visible but hasn't reached threshold yet
-    if (!activeHeading && headings.length > 0 && headingStates.get(headings[0]) === 'below') {
-      const rect = headings[0].getBoundingClientRect();
-      if (rect.top > 0 && rect.top < window.innerHeight) {
+    if (!activeHeading && headings.length > 0) {
+      const firstHeadingRect = headings[0].getBoundingClientRect();
+      if (firstHeadingRect.top > 0 && firstHeadingRect.top < window.innerHeight) {
         activeHeading = headings[0];
       }
     }
-    
-    updateTocHighlight(activeHeading);
+
+    // Update ToC highlighting
+    const allLinks = tocContainer.querySelectorAll('.dt-toc-link');
+    allLinks.forEach((link) => {
+      link.classList.remove('dt-toc-active');
+    });
+
+    if (activeHeading) {
+      const activeLink = tocContainer.querySelector(
+        `a[href="#${activeHeading.id}"]`
+      );
+      if (activeLink) {
+        activeLink.classList.add('dt-toc-active');
+        
+        // Auto-scroll the ToC to keep the active link visible
+        activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
   };
-  
+
+  // Key optimization: Use IntersectionObserver to trigger updates only when
+  // headings cross boundaries, rather than on every scroll event.
+  // This provides significant performance benefit while maintaining reliability.
   headingObserver = new IntersectionObserver(
     (entries) => {
-      // Only process the headings that actually changed
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          headingStates.set(entry.target, 'in-zone');
-        } else {
-          // Use the intersection data to determine if above or below
-          // entry.boundingClientRect and entry.rootBounds are already computed
-          if (entry.rootBounds && entry.boundingClientRect.bottom < entry.rootBounds.top) {
-            headingStates.set(entry.target, 'above');
-          } else {
-            headingStates.set(entry.target, 'below');
-          }
-        }
-      });
-      
-      determineActiveHeading();
+      // Only update when headings actually cross into/out of the detection zone
+      updateActiveHeading();
     },
     {
+      // Trigger when headings cross into the top 20% zone
       rootMargin: '-20% 0px -80% 0px',
       threshold: 0,
     }
   );
-  
-  headings.forEach(heading => headingObserver!.observe(heading));
+
+  // Observe all headings
+  headings.forEach((heading) => {
+    headingObserver!.observe(heading);
+  });
   
   // Trigger initial highlight after next paint to ensure layout is calculated
-  requestAnimationFrame(() => determineActiveHeading());
+  requestAnimationFrame(() => updateActiveHeading());
 }
