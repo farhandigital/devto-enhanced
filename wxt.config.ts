@@ -6,6 +6,5 @@ export default defineConfig({
   modules: ['@wxt-dev/module-svelte', '@wxt-dev/auto-icons'],
   manifest: {
     permissions: ['storage'],
-    host_permissions: ['https://dev.to/*'],
   },
 });
