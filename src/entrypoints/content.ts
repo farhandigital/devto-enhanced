@@ -87,9 +87,27 @@ export default defineContentScript({
           if (isMainContent) return true;
         }
         
-        // Check for body class changes (layout class toggles from other sources)
+        // Check for body class changes, but IGNORE our own dt-* classes to prevent infinite loop
         if (mutation.type === 'attributes' && mutation.target === document.body) {
-          return true;
+          const oldValue = mutation.oldValue || '';
+          const newValue = (mutation.target as HTMLElement).className;
+          
+          // Check if the change is only our dt-* classes (dt-clean-left, dt-clean-right, dt-hide-subforem, dt-smooth-scroll-enabled)
+          const oldClasses = new Set(oldValue.split(/\s+/).filter(c => c));
+          const newClasses = new Set(newValue.split(/\s+/).filter(c => c));
+          
+          // Find what changed
+          const added = [...newClasses].filter(c => !oldClasses.has(c));
+          const removed = [...oldClasses].filter(c => !newClasses.has(c));
+          const allChanges = [...added, ...removed];
+          
+          // If ALL changes are our own dt-* classes, ignore this mutation
+          const onlyOurClasses = allChanges.every(cls => cls.startsWith('dt-'));
+          if (onlyOurClasses) {
+            return false; // Ignore our own class changes
+          }
+          
+          return true; // External class change, this is significant
         }
         
         return false;
@@ -106,6 +124,7 @@ export default defineContentScript({
       subtree: true,
       attributes: true,
       attributeFilter: ['class'],
+      attributeOldValue: true, // Need this to compare old vs new classes
       characterData: false
     });
   },
