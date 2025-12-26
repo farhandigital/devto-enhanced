@@ -83,6 +83,24 @@ body.dt-clean-right .crayons-layout__sidebar-right > *:not(.dt-toc-container) {
   border-left-color: var(--accent-brand, #3b49df);
 }
 
+/* Active section highlight */
+.dt-toc-link.dt-toc-active {
+  color: var(--accent-brand, #2d3ecc);
+  border-left-color: var(--accent-brand, #2d3ecc);
+  font-weight: 600;
+  background: rgba(59, 73, 223, 0.12);
+  margin-left: -0.5rem;
+  padding-left: 1rem;
+  border-radius: 0.25rem;
+}
+
+/* Dark mode support for active ToC link */
+body.dark-theme .dt-toc-link.dt-toc-active {
+  color: var(--accent-brand, #6b7aff);
+  border-left-color: var(--accent-brand, #6b7aff);
+  background: rgba(107, 122, 255, 0.18);
+}
+
 /* Nesting levels */
 .dt-toc-level-1 { margin-left: 0; }
 .dt-toc-level-2 { margin-left: 0.5rem; }
