@@ -1,7 +1,10 @@
 export interface ExtensionSettings {
+  // Global Features (all pages)
+  global: {
+    hideSubforemSwitcher: boolean;
+  };
   // Article Page Features
   article: {
-    hideLeftSidebar: boolean;
     hideRightSidebar: boolean;
     moveEngagement: boolean;
     showToC: boolean;
@@ -15,8 +18,10 @@ export interface ExtensionSettings {
 }
 
 export const DEFAULT_SETTINGS: ExtensionSettings = {
+  global: {
+    hideSubforemSwitcher: true,
+  },
   article: {
-    hideLeftSidebar: true,
     hideRightSidebar: true,
     moveEngagement: true,
     showToC: true,

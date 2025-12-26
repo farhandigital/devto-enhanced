@@ -21,7 +21,14 @@
     items: ToggleItem<K>[];
   };
 
-  const toggleConfig: (ToggleSection<'article'> | ToggleSection<'home'>)[] = [
+  const toggleConfig: (ToggleSection<'global'> | ToggleSection<'article'> | ToggleSection<'home'>)[] = [
+    {
+      section: 'global' as const,
+      title: 'Global',
+      items: [
+        { key: 'hideSubforemSwitcher', label: 'Hide Subforem Switcher' },
+      ],
+    },
     {
       section: 'home' as const,
       title: 'Homepage',
@@ -34,7 +41,6 @@
       section: 'article' as const,
       title: 'Article Page',
       items: [
-        { key: 'hideLeftSidebar', label: 'Hide Left Sidebar' },
         { key: 'hideRightSidebar', label: 'Hide Right Sidebar' },
         { key: 'moveEngagement', label: 'Move Engagement Buttons' },
         { key: 'showToC', label: 'Sticky Table of Contents' },
