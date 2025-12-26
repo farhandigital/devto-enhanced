@@ -9,6 +9,7 @@ export interface ExtensionSettings {
     moveEngagement: boolean;
     showToC: boolean;
     showReadingStats: boolean;
+    showCopyButton: boolean;
   };
   // Homepage Features
   home: {
@@ -26,6 +27,7 @@ export const DEFAULT_SETTINGS: ExtensionSettings = {
     moveEngagement: true,
     showToC: true,
     showReadingStats: true,
+    showCopyButton: true,
   },
   home: {
     hideLeftSidebar: true,
