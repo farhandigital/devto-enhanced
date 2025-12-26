@@ -57,4 +57,7 @@ export function renderTableOfContents(settings: ExtensionSettings) {
 
   // Inject ToC as the last item in the right sidebar
   rightSidebar.appendChild(tocContainer);
+  
+  // Enable smooth scrolling now that ToC is ready for anchor links
+  document.documentElement.classList.add('dt-smooth-scroll-enabled');
 }

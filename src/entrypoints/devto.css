@@ -1,11 +1,12 @@
 /* --- Smooth Scrolling --- */
-html {
+/* Only enable smooth scrolling when ToC is ready to avoid interfering with initial page scroll */
+html.dt-smooth-scroll-enabled {
   scroll-behavior: smooth;
 }
 
 /* Respect user preference for reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html.dt-smooth-scroll-enabled {
     scroll-behavior: auto;
   }
 }
