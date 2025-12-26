@@ -9,14 +9,17 @@ function toggleSidebarClass(body: HTMLElement, hideLeft: boolean, hideRight: boo
 }
 
 /**
- * Toggles CSS classes on the body to hide/show sidebars
+ * Toggles CSS classes on the body to hide/show sidebars and other elements
  */
 export function applyLayoutCleaning(settings: ExtensionSettings) {
   const isArticle = document.body.classList.contains('crayons-layout--article') || document.querySelector('.crayons-article__body') !== null;
   const isHome = document.querySelector('.stories-index') !== null;
 
+  // Apply global settings (all pages)
+  document.body.classList.toggle('dt-hide-subforem', settings.global.hideSubforemSwitcher);
+
   if (isArticle) {
-    toggleSidebarClass(document.body, settings.article.hideLeftSidebar, settings.article.hideRightSidebar);
+    toggleSidebarClass(document.body, false, settings.article.hideRightSidebar);
   } else if (isHome) {
     toggleSidebarClass(document.body, settings.home.hideLeftSidebar, settings.home.hideRightSidebar);
   } else {

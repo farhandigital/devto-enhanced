@@ -6,11 +6,20 @@ import { settingsStorage } from '@/utils/storage';
 import type { ExtensionSettings } from '@/utils/types';
 import './devto.css';
 
+const state = {
+  debounceTimer: null as ReturnType<typeof setTimeout> | null,
+  observer: null as MutationObserver | null,
+  initialized: false,
+};
+
 export default defineContentScript({
   matches: ['https://dev.to/*'],
   cssInjectionMode: 'manifest', 
   
   async main() {
+    if (state.initialized) return;
+    state.initialized = true;
+
     // 1. Initial Load
     let settings = await settingsStorage.getValue();
     runFeatures(settings);
@@ -24,52 +33,58 @@ export default defineContentScript({
     });
 
     // 3. Handle Dev.to SPA navigation (InstantClick/Turbo)
-    // Dev.to pages change without full reload. We observe for significant changes.
-    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-    
-    const observer = new MutationObserver((mutations) => {
-      // Clear existing timer to debounce rapid mutations
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-      
-      // Filter out mutations caused by our own extension elements
-      const hasSignificantChanges = mutations.some(mutation => {
-        if (mutation.type !== 'childList' || mutation.addedNodes.length === 0) {
-          return false;
+    state.observer = new MutationObserver((mutations) => {
+      // Only apply layout cleaning for significant mutations (page transitions)
+      // Skip mutations from lazy-loaded content, ads, or irrelevant elements
+      const significantMutation = mutations.some(mutation => {
+        // Check for page structure changes (main content replacements)
+        if (mutation.type === 'childList') {
+          // Look for changes to article content or stories index (main page structure)
+          const target = mutation.target as Element;
+          const isMainContent = target.id === 'main-content' || 
+                               target.classList.contains('stories-index') ||
+                               target.classList.contains('crayons-article__body');
+          if (isMainContent) return true;
         }
         
-        // Ignore mutations within our extension's elements (prefixed with dt-)
-        const target = mutation.target as Element;
-        if (target.id?.startsWith('dt-') || target.className?.includes('dt-')) {
-          return false;
+        // Check for body class changes (layout class toggles from other sources)
+        if (mutation.type === 'attributes' && mutation.target === document.body) {
+          return true;
         }
         
-        // Ignore mutations that only add our extension elements
-        const addedExtensionElements = Array.from(mutation.addedNodes).every(node => {
-          if (node.nodeType !== Node.ELEMENT_NODE) return false;
-          const element = node as Element;
-          return element.id?.startsWith('dt-') || element.className?.includes('dt-');
-        });
-        
-        return !addedExtensionElements;
+        return false;
       });
       
-      if (hasSignificantChanges) {
-        debounceTimer = setTimeout(() => {
-          runFeatures(settings);
-          debounceTimer = null;
-        }, 150); // 150ms debounce delay
+      if (significantMutation) {
+        applyLayoutCleaning(settings);
+        
+        // Also apply engagement buttons immediately on article pages to avoid blinking
+        if (document.querySelector('.crayons-article__body')) {
+          handleEngagementButtons(settings);
+        }
       }
+      
+      // Debounce other features (reading stats, TOC)
+      if (state.debounceTimer) {
+        clearTimeout(state.debounceTimer);
+      }
+      
+      state.debounceTimer = setTimeout(() => {
+        // Article specific features
+        if (document.querySelector('.crayons-article__body')) {
+          renderReadingStats(settings);
+          renderTableOfContents(settings);
+        }
+        state.debounceTimer = null;
+      }, 150);
     });
     
-    // Observe the main content container or body if not found
-    const targetNode = document.querySelector('#main-content') || document.body;
-    observer.observe(targetNode, { 
+    // Observe at document level but with filtered handling
+    state.observer.observe(document.documentElement, { 
       childList: true, 
       subtree: true,
-      // Only watch for added/removed nodes, not attributes or character data
-      attributes: false,
+      attributes: true,
+      attributeFilter: ['class'],
       characterData: false
     });
   },

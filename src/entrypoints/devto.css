@@ -10,13 +10,16 @@ html {
   }
 }
 
-/* --- Layout Cleaning Classes --- */
+/* --- Global Settings --- */
 
-/* Hide Left Sidebar - Hide content inside sidebars, not the sidebars themselves */
-body.dt-clean-left #main-side-bar > * {
+/* Hide Subforem Switcher */
+body.dt-hide-subforem #main-side-bar > * {
   display: none !important;
 }
 
+/* --- Layout Cleaning Classes --- */
+
+/* Hide Left Sidebar - Hide content inside sidebars, not the sidebars themselves */
 body.dt-clean-left #sidebar-wrapper-left > * {
   display: none !important;
 }
