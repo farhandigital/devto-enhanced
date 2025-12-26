@@ -42,8 +42,8 @@ export default defineContentScript({
           // Look for changes to article content or stories index (main page structure)
           const target = mutation.target as Element;
           const isMainContent = target.id === 'main-content' || 
-                               target.className?.includes('stories-index') ||
-                               target.className?.includes('crayons-article__body');
+                               target.classList.contains('stories-index') ||
+                               target.classList.contains('crayons-article__body');
           if (isMainContent) return true;
         }
         
