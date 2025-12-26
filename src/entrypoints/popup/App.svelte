@@ -45,6 +45,7 @@
         { key: 'moveEngagement', label: 'Move Engagement Buttons' },
         { key: 'showToC', label: 'Sticky Table of Contents' },
         { key: 'showReadingStats', label: 'Reading Stats' },
+        { key: 'showCopyButton', label: 'Copy Article Button' },
       ],
     },
   ];

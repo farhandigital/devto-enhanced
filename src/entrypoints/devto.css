@@ -194,3 +194,108 @@ body.dark-theme .dt-engagement-moved .crayons-reaction:hover {
 body.dark-theme .dt-engagement-moved .crayons-reaction__count {
   color: var(--base-80, #e5e5e5) !important;
 }
+
+/* --- Copy Article Button --- */
+.dt-copy-article-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--accent-brand, #3b49df);
+  color: #fff;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.dt-copy-article-btn:hover {
+  background: var(--accent-brand-darker, #2d3ecc);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(59, 73, 223, 0.3);
+}
+
+.dt-copy-article-btn:active {
+  transform: translateY(0);
+}
+
+.dt-copy-article-btn svg {
+  flex-shrink: 0;
+}
+
+/* Success state */
+.dt-copy-article-btn.dt-copy-success {
+  background: #10b981;
+  animation: dt-copy-pulse 0.3s ease-out;
+}
+
+.dt-copy-article-btn.dt-copy-success:hover {
+  background: #059669;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+}
+
+/* Error state */
+.dt-copy-article-btn.dt-copy-error {
+  background: #ef4444;
+  animation: dt-copy-shake 0.4s ease-out;
+}
+
+.dt-copy-article-btn.dt-copy-error:hover {
+  background: #dc2626;
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+}
+
+@keyframes dt-copy-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes dt-copy-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Dark mode support for copy button */
+body.dark-theme .dt-copy-article-btn {
+  background: var(--accent-brand, #6b7aff);
+  color: #fff;
+}
+
+body.dark-theme .dt-copy-article-btn:hover {
+  background: var(--accent-brand-lighter, #8b99ff);
+  box-shadow: 0 4px 6px rgba(107, 122, 255, 0.3);
+}
+
+body.dark-theme .dt-copy-article-btn.dt-copy-success {
+  background: #10b981;
+}
+
+body.dark-theme .dt-copy-article-btn.dt-copy-success:hover {
+  background: #059669;
+}
+
+body.dark-theme .dt-copy-article-btn.dt-copy-error {
+  background: #ef4444;
+}
+
+body.dark-theme .dt-copy-article-btn.dt-copy-error:hover {
+  background: #dc2626;
+}

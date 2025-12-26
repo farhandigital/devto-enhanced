@@ -8,6 +8,7 @@ import { applyLayoutCleaning } from '@/utils/features/layoutCleaner';
 import { handleEngagementButtons } from '@/utils/features/articleActionMover';
 import { renderReadingStats } from '@/utils/features/readingStats';
 import { renderTableOfContents } from '@/utils/features/tocGenerator';
+import { renderCopyArticleButton } from '@/utils/features/copyArticle';
 
 // Register layout cleaner (global feature)
 registerFeature({
@@ -35,4 +36,11 @@ registerFeature({
   name: 'tableOfContents',
   context: ['article'],
   execute: renderTableOfContents,
+});
+
+// Register copy article button (article-only feature)
+registerFeature({
+  name: 'copyArticleButton',
+  context: ['article'],
+  execute: renderCopyArticleButton,
 });
