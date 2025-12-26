@@ -1,10 +1,16 @@
-import { applyLayoutCleaning } from '@/utils/features/layoutCleaner';
-import { handleEngagementButtons } from '@/utils/features/articleActionMover';
-import { renderReadingStats } from '@/utils/features/readingStats';
-import { renderTableOfContents } from '@/utils/features/tocGenerator';
+import '@/utils/features'; // Register all features
+import { executeFeatures } from '@/utils/featureRegistry';
+import { PageDetector } from '@/utils/pageDetector';
+import { Selectors } from '@/utils/selectors';
 import { settingsStorage } from '@/utils/storage';
 import type { ExtensionSettings } from '@/utils/types';
 import './devto.css';
+
+/** Normalize PageDetector result to feature registry context */
+function getFeatureContext(): 'article' | 'home' | 'other' {
+  const pageType = PageDetector.getPageType();
+  return pageType === 'article' || pageType === 'home' ? pageType : 'other';
+}
 
 const state = {
   debounceTimer: null as ReturnType<typeof setTimeout> | null,
@@ -12,12 +18,8 @@ const state = {
   initialized: false,
 };
 
-function isArticlePage(): boolean {
-  return !!document.querySelector('.crayons-article__body');
-}
-
 function updateSmoothScrollState(): void {
-  const isArticle = isArticlePage();
+  const isArticle = PageDetector.isArticle();
   
   if (isArticle) {
     // Enable smooth scroll on article pages (after ToC is ready)
@@ -79,9 +81,9 @@ export default defineContentScript({
         if (mutation.type === 'childList') {
           // Look for changes to article content or stories index (main page structure)
           const target = mutation.target as Element;
-          const isMainContent = target.id === 'main-content' || 
-                               target.classList.contains('stories-index') ||
-                               target.classList.contains('crayons-article__body');
+          const isMainContent = target.matches(Selectors.mainContent) || 
+                               target.matches(Selectors.home.storiesIndex) ||
+                               target.matches(Selectors.article.body);
           if (isMainContent) return true;
         }
         
@@ -94,15 +96,7 @@ export default defineContentScript({
       });
       
       if (significantMutation) {
-        applyLayoutCleaning(settings);
-        
-        // Also apply engagement buttons immediately on article pages to avoid blinking
-        if (document.querySelector('.crayons-article__body')) {
-          handleEngagementButtons(settings);
-          // Only re-render TOC/reading stats on significant page changes
-          renderReadingStats(settings);
-          renderTableOfContents(settings);
-        }
+        executeFeatures(getFeatureContext(), settings);
       }
     });
     
@@ -118,14 +112,5 @@ export default defineContentScript({
 });
 
 function runFeatures(settings: ExtensionSettings) {
-  // Apply global layout cleaning (CSS classes)
-  applyLayoutCleaning(settings);
-
-  // Article specific features
-  // We check if we are on an article page by looking for the article body class
-  if (document.querySelector('.crayons-article__body')) {
-    handleEngagementButtons(settings);
-    renderReadingStats(settings);
-    renderTableOfContents(settings);
-  }
+  executeFeatures(getFeatureContext(), settings);
 }

@@ -1,10 +1,11 @@
 import type { ExtensionSettings } from '@/utils/types';
+import { PageDetector } from '@/utils/pageDetector';
+import { Selectors } from '@/utils/selectors';
 
 export function handleEngagementButtons(settings: ExtensionSettings) {
-  const isArticle = !!document.querySelector('.crayons-article__body');
-  if (!isArticle) return;
+  if (!PageDetector.isArticle()) return;
 
-  const actionsContainer = document.querySelector<HTMLElement>('.crayons-article-actions');
+  const actionsContainer = document.querySelector<HTMLElement>(Selectors.article.actions);
   
   if (!actionsContainer) return;
 
@@ -26,9 +27,9 @@ export function handleEngagementButtons(settings: ExtensionSettings) {
       }
       
       actionsContainer.classList.add('dt-engagement-moved');
-      
+
       // Find the H1 and insert after it
-      const h1 = document.querySelector('h1');
+      const h1 = document.querySelector(Selectors.article.titleHeader);
       if (h1 && h1.parentElement) {
         h1.parentElement.insertBefore(actionsContainer, h1.nextElementSibling);
       }
