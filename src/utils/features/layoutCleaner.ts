@@ -8,31 +8,33 @@ import { HIDEABLE_ELEMENTS, getSettingValue } from '@/config/hideableElements';
  */
 export function applyLayoutCleaning(settings: ExtensionSettings) {
   const pageType = PageDetector.getPageType();
-  
-  console.log('[DevTo Enhanced] layoutCleaner running:', {
-    pageType,
-    isArticle: PageDetector.isArticle(),
-    hasArticleBody: !!document.querySelector('.crayons-article__body'),
-    bodyClasses: document.body.classList.contains('crayons-layout--article'),
-  });
 
-  // Iterate through all hideable elements and apply classes based on context
+  // Track which CSS classes should be applied in this context
+  // This prevents removing classes that were just applied by other entries
+  const appliedClasses = new Set<string>();
+
+  // First pass: apply classes for matching contexts
   HIDEABLE_ELEMENTS.forEach((element) => {
     const shouldApply =
       element.context === 'global' || element.context === pageType;
 
     if (shouldApply) {
       const isEnabled = getSettingValue(settings, element.settingPath);
-      console.log('[DevTo Enhanced] Applying:', {
-        element: element.cssClass,
-        context: element.context,
-        settingPath: element.settingPath,
-        isEnabled,
-      });
       document.body.classList.toggle(element.cssClass, isEnabled);
-    } else {
-      // Remove class if not in the correct context
-      console.log('[DevTo Enhanced] Removing (wrong context):', element.cssClass);
+      if (isEnabled) {
+        appliedClasses.add(element.cssClass);
+      }
+    }
+  });
+
+  // Second pass: remove classes for non-matching contexts
+  // But only if they weren't applied in the first pass
+  HIDEABLE_ELEMENTS.forEach((element) => {
+    const shouldApply =
+      element.context === 'global' || element.context === pageType;
+
+    if (!shouldApply && !appliedClasses.has(element.cssClass)) {
+      // Remove class if not in the correct context AND wasn't applied
       document.body.classList.remove(element.cssClass);
     }
   });
