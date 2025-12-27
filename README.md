@@ -13,9 +13,11 @@ A browser extension that transforms your [dev.to](https://dev.to) reading experi
 All features are **fully toggleable** via the extension popup menu, with preferences automatically persisted to browser storage and synchronized in real-time across tabs.
 
 ### 🌐 Global Features
+
 - **Hide Subforem Switcher** — Remove the Subforem navigation menu for a cleaner interface
 
 ### 📖 Article Page Features
+
 - **Hide Right Sidebar** — Remove distracting sidebar content to focus on the article
 - **Move Engagement Buttons** — Relocate like/comment/save buttons to appear below the article title for easier access
 - **Sticky Table of Contents** — Auto-generate a dynamic, scrollspy-enabled table of contents in the right sidebar that:
@@ -33,12 +35,14 @@ All features are **fully toggleable** via the extension popup menu, with prefere
 - **Center Article** — Center the article content when sidebars are hidden (requires right sidebar hidden AND ToC disabled)
 
 ### 🏠 Homepage Features
+
 - **Hide Left Sidebar** — Remove the left navigation sidebar for a cleaner feed view
 - **Hide Right Sidebar** — Remove the right sidebar for a distraction-free browsing experience
 
 ## 🎯 How It Works
 
 The extension uses a feature registry system to:
+
 1. **Apply CSS-based Layouts** — Dynamically toggle CSS classes on the document body to hide/show elements based on page context
 2. **Inject Dynamic Features** — Render UI enhancements (ToC, reading stats, copy button) directly into the page DOM
 3. **Handle SPA Navigation** — Monitor DOM changes and URL transitions to re-apply features when navigating between pages (dev.to uses SPA-style navigation)
@@ -87,6 +91,7 @@ The extension icon should now appear in your browser's toolbar.
 <summary>Click to see development guide</summary>
 
 ### Prerequisites
+
 - [Bun](https://bun.sh) installed on your system
 - A Chromium-based browser (Chrome, Edge, Brave) or Firefox
 
@@ -123,7 +128,7 @@ bun run zip:firefox   # Firefox
 
 ### Project Structure
 
-```
+```bash
 src/
 ├── assets/              # Static assets (icons, images)
 ├── config/              # Configuration files
@@ -196,27 +201,35 @@ The feature will automatically appear in the popup UI and execute on the appropr
 <summary>Click to see architecture</summary>
 
 ### Feature Registry System
+
 The extension uses a centralized feature registry that enables:
+
 - **Declarative feature definitions** — Register features with metadata (name, context, type, settings)
 - **Automatic orchestration** — Features are executed based on page context without manual coordination
 - **Type-safe settings** — Full TypeScript support for all feature configurations
 - **Dynamic UI generation** — Popup interface is automatically generated from registered features
 
 ### Context-Aware Execution
+
 Features are registered with specific contexts:
+
 - **Global** — Execute on all dev.to pages
 - **Article** — Execute only on article pages
 - **Home** — Execute only on the homepage
 
 ### Mutation Observer with Smart Filtering
+
 The content script uses a MutationObserver to detect SPA navigation, but includes intelligent filtering to:
+
 - Ignore mutations from the extension's own injected elements
 - Only react to significant DOM changes (page transitions)
 - Prevent infinite loops from self-triggered mutations
 - Skip irrelevant changes (ads, lazy-loaded content)
 
 ### CSS-First Approach for Layout Changes
+
 Layout modifications (hiding sidebars, centering content) are implemented primarily through CSS classes toggled on the `<body>` element. This provides:
+
 - **Better performance** — No DOM manipulation for simple visibility changes
 - **Smooth transitions** — CSS animations for better UX
 - **Maintainability** — Centralized styles in `devto.css`
@@ -235,6 +248,7 @@ Contributions are welcome! Feel free to:
 ### Reporting Issues
 
 When reporting bugs, please include:
+
 - Browser and extension version
 - Steps to reproduce the issue
 - Expected vs actual behavior
