@@ -188,10 +188,10 @@ The feature will automatically appear in the popup UI and execute on the appropr
 
 </details>
 
-## 🏗️ Key Architecture Decisions
+## 🏗️ Architecture
 
 <details>
-<summary>Click to see architecture description</summary>
+<summary>Click to see architecture</summary>
 
 ### Feature Registry System
 The extension uses a centralized feature registry that enables:
