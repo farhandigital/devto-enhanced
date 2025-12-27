@@ -72,7 +72,7 @@ export function getUIFeatures() {
   return {
     global: features.filter((f) => f.context.includes('global')),
     home: features.filter((f) => f.context.includes('home') && !f.context.includes('global')),
-    article: features.filter((f) => f.context.includes('article')),
+    article: features.filter((f) => f.context.includes('article') && !f.context.includes('global')),
   };
 }
 
