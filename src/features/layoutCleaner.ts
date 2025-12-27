@@ -1,4 +1,9 @@
-import type { ExtensionSettings } from '@/utils/types';
+/**
+ * Layout Cleaner Feature
+ * Handles hiding/showing UI elements based on settings
+ */
+
+import type { ExtensionSettings } from '@/types/settings';
 import { PageDetector } from '@/utils/pageDetector';
 import { HIDEABLE_ELEMENTS, getSettingValue } from '@/config/hideableElements';
 

@@ -1,12 +1,17 @@
-import type { ExtensionSettings } from '@/utils/types';
-import { Selectors } from '@/utils/selectors';
+/**
+ * Copy Article Feature
+ * Allows copying article content in Markdown format
+ */
+
+import type { ExtensionSettings } from '@/types/settings';
+import { Selectors } from '@/config/selectors';
 
 /**
  * Extracts text content from an element while preserving formatting
  */
 function extractFormattedText(element: Element): string {
   const parts: string[] = [];
-  
+
   for (const node of element.childNodes) {
     if (node.nodeType === Node.TEXT_NODE) {
       const text = node.textContent || '';
@@ -16,7 +21,7 @@ function extractFormattedText(element: Element): string {
     } else if (node.nodeType === Node.ELEMENT_NODE) {
       const el = node as Element;
       const tagName = el.tagName.toLowerCase();
-      
+
       // Handle different element types
       switch (tagName) {
         case 'br':
@@ -43,7 +48,10 @@ function extractFormattedText(element: Element): string {
           break;
         case 'code':
           // Inline code
-          if (!el.parentElement || el.parentElement.tagName.toLowerCase() !== 'pre') {
+          if (
+            !el.parentElement ||
+            el.parentElement.tagName.toLowerCase() !== 'pre'
+          ) {
             parts.push('`' + (el.textContent || '') + '`');
           } else {
             // Block code - handled by pre
@@ -93,7 +101,7 @@ function extractFormattedText(element: Element): string {
       }
     }
   }
-  
+
   return parts.join('');
 }
 
@@ -103,13 +111,13 @@ function extractFormattedText(element: Element): string {
 function extractList(listEl: Element, type: string): string {
   const items: string[] = [];
   const listItems = listEl.querySelectorAll(':scope > li');
-  
+
   listItems.forEach((li, index) => {
     const prefix = type === 'ol' ? `${index + 1}. ` : '- ';
     const text = extractFormattedText(li).trim();
     items.push(prefix + text);
   });
-  
+
   return items.join('\n');
 }
 
@@ -118,46 +126,46 @@ function extractList(listEl: Element, type: string): string {
  */
 function extractArticleContent(): string {
   const parts: string[] = [];
-  
+
   // Extract title
   const titleEl = document.querySelector(Selectors.article.titleHeader);
   if (titleEl) {
     parts.push('# ' + titleEl.textContent?.trim() + '\n');
   }
-  
+
   // Extract metadata (author and URL)
   const metadata: string[] = [];
-  
+
   // Extract author
   const authorEl = document.querySelector(Selectors.article.authorLink);
   if (authorEl) {
     const authorName = authorEl.textContent?.trim();
     const authorHref = authorEl.getAttribute('href');
     if (authorName && authorHref) {
-      const authorUrl = authorHref.startsWith('http') ? authorHref : `https://dev.to${authorHref}`;
+      const authorUrl = authorHref.startsWith('http')
+        ? authorHref
+        : `https://dev.to${authorHref}`;
       metadata.push(`**Author:** [${authorName}](${authorUrl})`);
     }
   }
-  
+
   // Extract article URL
   const articleUrl = window.location.href;
   metadata.push(`**URL:** ${articleUrl}`);
-  
+
   if (metadata.length > 0) {
     parts.push(metadata.join('  \n') + '\n');
   }
-  
+
   // Extract article body
   const articleBody = document.querySelector(Selectors.article.bodyId);
   if (articleBody) {
     const content = extractFormattedText(articleBody);
     // Clean up excessive newlines
-    const cleaned = content
-      .replace(/\n{3,}/g, '\n\n')
-      .trim();
+    const cleaned = content.replace(/\n{3,}/g, '\n\n').trim();
     parts.push(cleaned);
   }
-  
+
   return parts.join('\n');
 }
 
@@ -179,24 +187,26 @@ async function copyToClipboard(text: string): Promise<boolean> {
  */
 export function renderCopyArticleButton(settings: ExtensionSettings) {
   const existingButton = document.getElementById('dt-copy-article-btn');
-  
+
   // Remove existing button
   if (existingButton) {
     existingButton.remove();
   }
-  
+
   // Check if feature is enabled
   if (!settings.article.showCopyButton) return;
-  
+
   // Find insertion point (after tags or after title)
-  const titleHeader = document.querySelector(Selectors.article.titleHeaderContainer);
+  const titleHeader = document.querySelector(
+    Selectors.article.titleHeaderContainer
+  );
   if (!titleHeader) return;
-  
+
   const tagsContainer = titleHeader.querySelector(Selectors.article.tagsContainer);
   const insertionPoint = tagsContainer || titleHeader.querySelector('h1');
-  
+
   if (!insertionPoint) return;
-  
+
   // Create button
   const button = document.createElement('button');
   button.id = 'dt-copy-article-btn';
@@ -208,11 +218,11 @@ export function renderCopyArticleButton(settings: ExtensionSettings) {
     </svg>
     Copy Article
   `;
-  
+
   button.onclick = async () => {
     const content = extractArticleContent();
     const success = await copyToClipboard(content);
-    
+
     if (success) {
       // Change button to success state
       button.classList.add('dt-copy-success');
@@ -222,7 +232,7 @@ export function renderCopyArticleButton(settings: ExtensionSettings) {
         </svg>
         Copied!
       `;
-      
+
       // Reset button after 2 seconds
       setTimeout(() => {
         button.classList.remove('dt-copy-success');
@@ -245,7 +255,7 @@ export function renderCopyArticleButton(settings: ExtensionSettings) {
         </svg>
         Failed
       `;
-      
+
       setTimeout(() => {
         button.classList.remove('dt-copy-error');
         button.innerHTML = `
@@ -258,7 +268,7 @@ export function renderCopyArticleButton(settings: ExtensionSettings) {
       }, 2000);
     }
   };
-  
+
   // Insert button after tags or title
   insertionPoint.insertAdjacentElement('afterend', button);
 }
