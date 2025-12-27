@@ -84,6 +84,9 @@ The extension icon should now appear in your browser's toolbar.
 
 ## 🛠️ Development
 
+<details>
+<summary>Click to see development guide</summary>
+
 ### Prerequisites
 - [Bun](https://bun.sh) installed on your system
 - A Chromium-based browser (Chrome, Edge, Brave) or Firefox
@@ -183,7 +186,12 @@ export interface ExtensionSettings {
 
 The feature will automatically appear in the popup UI and execute on the appropriate pages!
 
+</details>
+
 ## 🏗️ Key Architecture Decisions
+
+<details>
+<summary>Click to see architecture description</summary>
 
 ### Feature Registry System
 The extension uses a centralized feature registry that enables:
@@ -210,6 +218,8 @@ Layout modifications (hiding sidebars, centering content) are implemented primar
 - **Better performance** — No DOM manipulation for simple visibility changes
 - **Smooth transitions** — CSS animations for better UX
 - **Maintainability** — Centralized styles in `devto.css`
+
+</details>
 
 ## 🤝 Contributing
 
