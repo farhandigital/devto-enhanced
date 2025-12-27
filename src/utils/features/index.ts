@@ -10,10 +10,43 @@ import { renderReadingStats } from '@/utils/features/readingStats';
 import { renderTableOfContents } from '@/utils/features/tocGenerator';
 import { renderCopyArticleButton } from '@/utils/features/copyArticle';
 
-// Register layout cleaner (global feature)
+// Register hide subforem switcher (global)
 registerFeature({
-  name: 'layoutCleaner',
+  name: 'hideSubforemSwitcher',
   context: ['global'],
+  type: 'hide',
+  settingKey: { section: 'global', key: 'hideSubforemSwitcher' },
+  label: 'Subforem Switcher',
+  execute: applyLayoutCleaning,
+});
+
+// Register hide left sidebar (home)
+registerFeature({
+  name: 'hideLeftSidebar',
+  context: ['home'],
+  type: 'hide',
+  settingKey: { section: 'home', key: 'hideLeftSidebar' },
+  label: 'Left Sidebar',
+  execute: applyLayoutCleaning,
+});
+
+// Register hide right sidebar (home)
+registerFeature({
+  name: 'hideRightSidebarHome',
+  context: ['home'],
+  type: 'hide',
+  settingKey: { section: 'home', key: 'hideRightSidebar' },
+  label: 'Right Sidebar',
+  execute: applyLayoutCleaning,
+});
+
+// Register hide right sidebar (article)
+registerFeature({
+  name: 'hideRightSidebarArticle',
+  context: ['article'],
+  type: 'hide',
+  settingKey: { section: 'article', key: 'hideRightSidebar' },
+  label: 'Right Sidebar',
   execute: applyLayoutCleaning,
 });
 
@@ -21,6 +54,9 @@ registerFeature({
 registerFeature({
   name: 'engagementButtonMover',
   context: ['article'],
+  type: 'hide',
+  settingKey: { section: 'article', key: 'moveEngagement' },
+  label: 'Move Engagement Buttons',
   execute: handleEngagementButtons,
 });
 
@@ -28,6 +64,9 @@ registerFeature({
 registerFeature({
   name: 'readingStats',
   context: ['article'],
+  type: 'add',
+  settingKey: { section: 'article', key: 'showReadingStats' },
+  label: 'Reading Stats',
   execute: renderReadingStats,
 });
 
@@ -35,6 +74,9 @@ registerFeature({
 registerFeature({
   name: 'tableOfContents',
   context: ['article'],
+  type: 'add',
+  settingKey: { section: 'article', key: 'showToC' },
+  label: 'Sticky Table of Contents',
   execute: renderTableOfContents,
 });
 
@@ -42,5 +84,8 @@ registerFeature({
 registerFeature({
   name: 'copyArticleButton',
   context: ['article'],
+  type: 'add',
+  settingKey: { section: 'article', key: 'showCopyButton' },
+  label: 'Copy Article Button',
   execute: renderCopyArticleButton,
 });
