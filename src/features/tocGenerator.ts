@@ -1,5 +1,10 @@
-import type { ExtensionSettings } from '@/utils/types';
-import { Selectors } from '@/utils/selectors';
+/**
+ * Table of Contents Feature
+ * Generates a sticky ToC for article pages
+ */
+
+import type { ExtensionSettings } from '@/types/settings';
+import { Selectors } from '@/config/selectors';
 
 // Store the observer globally so we can disconnect it on re-render
 let headingObserver: IntersectionObserver | null = null;
@@ -26,17 +31,19 @@ export function renderTableOfContents(settings: ExtensionSettings) {
 
   // Find the article title from header#main-title
   const titleHeading = document.querySelector(Selectors.article.titleHeader);
-  
+
   // Find article body headings
-  const articleHeadings = articleBody.querySelectorAll(Selectors.article.headings);
-  
+  const articleHeadings = articleBody.querySelectorAll(
+    Selectors.article.headings
+  );
+
   // Combine title with article headings
   const allHeadings: Element[] = [];
   if (titleHeading) {
     allHeadings.push(titleHeading);
   }
   allHeadings.push(...Array.from(articleHeadings));
-  
+
   if (allHeadings.length === 0) return;
 
   // If no sidebar exists, we can't inject the ToC
@@ -82,7 +89,7 @@ export function renderTableOfContents(settings: ExtensionSettings) {
 
   // Inject ToC as the last item in the right sidebar
   rightSidebar.appendChild(tocContainer);
-  
+
   // Enable smooth scrolling only on article pages after ToC is ready
   document.documentElement.classList.add('dt-smooth-scroll-enabled');
 
@@ -102,18 +109,21 @@ function setupActiveHeadingObserver(
     // This is the reliable approach that checks actual positions
     for (const heading of headings) {
       const rect = heading.getBoundingClientRect();
-      
+
       // A heading is a candidate if it's at or past the threshold
       // We want the last heading that satisfies this condition
       if (rect.top <= threshold) {
         activeHeading = heading;
       }
     }
-    
+
     // Edge case: first heading is visible but hasn't reached threshold yet
     if (!activeHeading && headings.length > 0) {
       const firstHeadingRect = headings[0].getBoundingClientRect();
-      if (firstHeadingRect.top > 0 && firstHeadingRect.top < window.innerHeight) {
+      if (
+        firstHeadingRect.top > 0 &&
+        firstHeadingRect.top < window.innerHeight
+      ) {
         activeHeading = headings[0];
       }
     }
@@ -130,7 +140,7 @@ function setupActiveHeadingObserver(
       );
       if (activeLink) {
         activeLink.classList.add('dt-toc-active');
-        
+
         // Auto-scroll the ToC to keep the active link visible
         activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
@@ -156,7 +166,7 @@ function setupActiveHeadingObserver(
   headings.forEach((heading) => {
     headingObserver!.observe(heading);
   });
-  
+
   // Trigger initial highlight after next paint to ensure layout is calculated
   requestAnimationFrame(() => updateActiveHeading());
 }

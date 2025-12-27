@@ -1,9 +1,9 @@
-import '@/utils/features'; // Register all features
-import { executeFeatures } from '@/utils/featureRegistry';
+import '@/features'; // Register all features
+import { executeFeatures } from '@/features/registry';
 import { PageDetector } from '@/utils/pageDetector';
-import { Selectors } from '@/utils/selectors';
+import { Selectors } from '@/config/selectors';
 import { settingsStorage } from '@/utils/storage';
-import type { ExtensionSettings } from '@/utils/types';
+import type { ExtensionSettings } from '@/types/settings';
 import './devto.css';
 
 /** Normalize PageDetector result to feature registry context */
