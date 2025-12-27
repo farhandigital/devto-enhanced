@@ -2,7 +2,7 @@
   "name": "devto-enhanced",
   "description": "Enhance your reading experience on dev.to by clearing clutters, adding Table of Content, and much more.",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
