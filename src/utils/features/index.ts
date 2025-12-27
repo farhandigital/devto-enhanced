@@ -9,6 +9,7 @@ import { handleEngagementButtons } from '@/utils/features/articleActionMover';
 import { renderReadingStats } from '@/utils/features/readingStats';
 import { renderTableOfContents } from '@/utils/features/tocGenerator';
 import { renderCopyArticleButton } from '@/utils/features/copyArticle';
+import { handleArticleCentering } from '@/utils/features/articleCentering';
 
 // Register hide subforem switcher (global)
 registerFeature({
@@ -88,4 +89,15 @@ registerFeature({
   settingKey: { section: 'article', key: 'showCopyButton' },
   label: 'Copy Article Button',
   execute: renderCopyArticleButton,
+});
+
+// Register article centering (article-only feature)
+// Only activates when both sidebars hidden + ToC disabled
+registerFeature({
+  name: 'centerArticle',
+  context: ['article'],
+  type: 'add',
+  settingKey: { section: 'article', key: 'centerArticle' },
+  label: 'Center Article',
+  execute: handleArticleCentering,
 });

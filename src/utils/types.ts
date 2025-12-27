@@ -10,6 +10,7 @@ export interface ExtensionSettings {
     showToC: boolean;
     showReadingStats: boolean;
     showCopyButton: boolean;
+    centerArticle: boolean;
   };
   // Homepage Features
   home: {
@@ -28,6 +29,7 @@ export const DEFAULT_SETTINGS: ExtensionSettings = {
     showToC: true,
     showReadingStats: true,
     showCopyButton: true,
+    centerArticle: false,
   },
   home: {
     hideLeftSidebar: true,
