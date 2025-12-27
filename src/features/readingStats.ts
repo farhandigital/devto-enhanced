@@ -4,7 +4,7 @@
  */
 
 import type { ExtensionSettings } from '@/types';
-import { Selectors } from '@/utils/selectors';
+import { Selectors } from '@/config/selectors';
 
 export function renderReadingStats(settings: ExtensionSettings) {
   const articleBody = document.querySelector(Selectors.article.bodyId);

@@ -1,7 +1,7 @@
 import '@/features'; // Register all features
 import { executeFeatures } from '@/features/registry';
 import { PageDetector } from '@/utils/pageDetector';
-import { Selectors } from '@/utils/selectors';
+import { Selectors } from '@/config/selectors';
 import { settingsStorage } from '@/utils/storage';
 import type { ExtensionSettings } from '@/types';
 import './devto.css';

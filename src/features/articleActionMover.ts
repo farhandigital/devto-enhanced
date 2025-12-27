@@ -5,7 +5,7 @@
 
 import type { ExtensionSettings } from '@/types';
 import { PageDetector } from '@/utils/pageDetector';
-import { Selectors } from '@/utils/selectors';
+import { Selectors } from '@/config/selectors';
 
 export function handleEngagementButtons(settings: ExtensionSettings) {
   if (!PageDetector.isArticle()) return;

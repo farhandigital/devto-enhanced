@@ -1,5 +1,5 @@
 import type { ExtensionSettings, HideableElement } from '@/types';
-import { Selectors } from '@/utils/selectors';
+import { Selectors } from '@/config/selectors';
 
 /**
  * Declarative configuration for all hideable elements

@@ -4,7 +4,7 @@
  */
 
 import type { ExtensionSettings } from '@/types';
-import { Selectors } from '@/utils/selectors';
+import { Selectors } from '@/config/selectors';
 
 /**
  * Extracts text content from an element while preserving formatting

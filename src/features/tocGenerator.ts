@@ -4,7 +4,7 @@
  */
 
 import type { ExtensionSettings } from '@/types';
-import { Selectors } from '@/utils/selectors';
+import { Selectors } from '@/config/selectors';
 
 // Store the observer globally so we can disconnect it on re-render
 let headingObserver: IntersectionObserver | null = null;
