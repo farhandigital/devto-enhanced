@@ -10,6 +10,8 @@ A browser extension that transforms your [dev.to](https://dev.to) reading experi
 
 ## ✨ Features
 
+All features are **fully toggleable** via the extension popup menu, with preferences automatically persisted to browser storage and synchronized in real-time across tabs.
+
 ### 🌐 Global Features
 - **Hide Subforem Switcher** — Remove the Subforem navigation menu for a cleaner interface
 
@@ -40,8 +42,6 @@ The extension uses a feature registry system to:
 1. **Apply CSS-based Layouts** — Dynamically toggle CSS classes on the document body to hide/show elements based on page context
 2. **Inject Dynamic Features** — Render UI enhancements (ToC, reading stats, copy button) directly into the page DOM
 3. **Handle SPA Navigation** — Monitor DOM changes and URL transitions to re-apply features when navigating between pages (dev.to uses SPA-style navigation)
-
-All features are **fully toggleable** via the extension popup menu, with preferences automatically persisted to browser storage and synchronized in real-time across tabs.
 
 ## 📥 Installation
 
