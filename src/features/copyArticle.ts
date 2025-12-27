@@ -7,7 +7,11 @@ import type { ExtensionSettings } from '@/types/settings';
 import { Selectors } from '@/config/selectors';
 
 /**
- * Extracts text content from an element while preserving formatting
+ * Extracts an element's textual content and converts common HTML formatting to Markdown.
+ *
+ * Preserves headings, paragraphs, bold, italics, inline and block code, lists, links, horizontal rules, blockquotes, and line breaks where possible.
+ *
+ * @returns The element's content as a Markdown-formatted string
  */
 function extractFormattedText(element: Element): string {
   const parts: string[] = [];
@@ -106,7 +110,11 @@ function extractFormattedText(element: Element): string {
 }
 
 /**
- * Extracts list items with proper formatting
+ * Formats the direct child list items of an HTML list element into Markdown list lines.
+ *
+ * @param listEl - The HTML list element whose direct `li` children will be converted
+ * @param type - The list type; use `'ol'` to produce numbered prefixes (`1. `), otherwise items are prefixed with `- `
+ * @returns A string with each list item as a Markdown list line separated by newlines
  */
 function extractList(listEl: Element, type: string): string {
   const items: string[] = [];
@@ -122,7 +130,13 @@ function extractList(listEl: Element, type: string): string {
 }
 
 /**
- * Extracts the full article content with formatting
+ * Builds a Markdown representation of the current article page.
+ *
+ * Extracts the title, author (if present), current page URL, and the article body (converted to Markdown),
+ * normalizes relative author links to absolute URLs using https://dev.to, and collapses runs of three or more
+ * consecutive newlines in the body to two.
+ *
+ * @returns The complete article as a Markdown-formatted string containing the title, metadata, and body.
  */
 function extractArticleContent(): string {
   const parts: string[] = [];
@@ -183,7 +197,13 @@ async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 /**
- * Renders the copy article button
+ * Insert a "Copy Article" button into the article header and wire its click behavior.
+ *
+ * The button is placed after the article's tags container or title header when present.
+ * Clicking the button extracts the article content as Markdown and attempts to copy it to the clipboard,
+ * with a transient success or error visual state shown on the button.
+ *
+ * @param settings - Extension settings that control whether the copy button is shown
  */
 export function renderCopyArticleButton(settings: ExtensionSettings) {
   const existingButton = document.getElementById('dt-copy-article-btn');

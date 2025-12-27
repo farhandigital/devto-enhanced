@@ -9,6 +9,15 @@ import { Selectors } from '@/config/selectors';
 // Store the observer globally so we can disconnect it on re-render
 let headingObserver: IntersectionObserver | null = null;
 
+/**
+ * Render a sticky table of contents in the right sidebar for an article page.
+ *
+ * Constructs a ToC from the article title and body headings, injects it into the right sidebar,
+ * enables smooth scrolling on the document, and initializes active-section highlighting using
+ * an IntersectionObserver. Existing ToC or observer state is cleaned up before rendering.
+ *
+ * @param settings - Extension settings; `settings.article.showToC` controls whether the ToC is rendered
+ */
 export function renderTableOfContents(settings: ExtensionSettings) {
   const existingToC = document.getElementById('dt-toc');
   const rightSidebar = document.querySelector(Selectors.layout.rightSidebar);
@@ -97,6 +106,14 @@ export function renderTableOfContents(settings: ExtensionSettings) {
   setupActiveHeadingObserver(allHeadings, tocContainer);
 }
 
+/**
+ * Initialize observation of article headings and keep the table of contents in sync with the currently visible section.
+ *
+ * Sets up a global IntersectionObserver that updates which ToC link is highlighted (adds `dt-toc-active`) based on heading positions, scrolls the active link into view, and schedules an initial highlight pass.
+ *
+ * @param headings - The list of article heading elements to observe for active-section changes
+ * @param tocContainer - The ToC container element that contains the `.dt-toc-link` anchors to update
+ */
 function setupActiveHeadingObserver(
   headings: Element[],
   tocContainer: HTMLElement

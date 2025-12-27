@@ -6,6 +6,14 @@
 import type { ExtensionSettings } from '@/types/settings';
 import { Selectors } from '@/config/selectors';
 
+/**
+ * Render a reading-stats widget (word count and estimated read time) for the current article.
+ *
+ * If present, an existing stats element with id "dt-reading-stats" is removed before rendering.
+ * The widget is not rendered when required DOM elements are missing or when `settings.article.showReadingStats` is falsy.
+ *
+ * @param settings - Extension settings that control whether reading stats are shown; the rendering is enabled when `settings.article.showReadingStats` is truthy
+ */
 export function renderReadingStats(settings: ExtensionSettings) {
   const articleBody = document.querySelector(Selectors.article.bodyId);
   const title = document.querySelector(Selectors.article.titleHeader);
