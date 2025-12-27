@@ -318,16 +318,7 @@ body.dt-center-article .crayons-layout__sidebar-right {
   display: none;
 }
 
-/* Keep engagement actions container, hide other children */
-body.dt-center-article #sidebar-wrapper-left {
-  width: auto;
-}
-
-body.dt-center-article #sidebar-wrapper-left > *:not(.crayons-article-actions) {
-  display: none;
-}
-
-/* Adjust grid layout */
+/* Adjust grid layout to keep space for engagement actions */
 body.dt-center-article .crayons-layout {
   grid-template-columns: auto 1fr;
   justify-items: center;
