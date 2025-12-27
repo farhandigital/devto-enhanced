@@ -74,9 +74,12 @@ h3 {
   gap: 0.5rem;
 }
 
-.emoji {
-  font-size: 1rem;
-  line-height: 1;
+.prefix {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .legend {

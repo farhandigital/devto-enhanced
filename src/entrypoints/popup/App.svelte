@@ -98,6 +98,10 @@
     return featureType === 'hide' ? '🧹' : '⚡';
   }
 
+  function getPrefix(featureType: 'hide' | 'add'): string {
+    return featureType === 'hide' ? 'Hide' : 'Add';
+  }
+
   function isFeatureEnabled(feature: Feature): boolean {
     // Special case: centerArticle requires right sidebar hidden AND ToC disabled
     if (feature.settingKey.section === 'article' && feature.settingKey.key === 'centerArticle') {
@@ -138,8 +142,8 @@
     <div class="loading-state">Loading settings...</div>
   {:else}
     <div class="legend">
-      <span class="legend-item"><span class="emoji">🧹</span> Clean clutter</span>
-      <span class="legend-item"><span class="emoji">⚡</span> Add features</span>
+      <span class="legend-item"><span class="emoji">🧹</span> <span class="prefix">Hide</span> clutter</span>
+      <span class="legend-item"><span class="emoji">⚡</span> <span class="prefix">Add</span> features</span>
     </div>
 
     {#each toggleConfig as { section, title, features }}
@@ -151,6 +155,7 @@
           <div class="toggle-row" class:disabled={!enabled}>
             <span class="toggle-label" id="{section}-{feature.settingKey.key}-label">
               <span class="emoji">{getEmoji(feature.type)}</span>
+              <span class="prefix">{getPrefix(feature.type)}</span>
               {feature.label}
               {#if tooltip}
                 <span class="tooltip-icon" title={tooltip}>ℹ️</span>
