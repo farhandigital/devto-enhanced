@@ -3,7 +3,7 @@
  * Displays word count and estimated reading time
  */
 
-import type { ExtensionSettings } from '@/types';
+import type { ExtensionSettings } from '@/types/settings';
 import { Selectors } from '@/config/selectors';
 
 export function renderReadingStats(settings: ExtensionSettings) {

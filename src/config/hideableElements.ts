@@ -1,4 +1,5 @@
-import type { ExtensionSettings, HideableElement } from '@/types';
+import type { ExtensionSettings } from '@/types/settings';
+import type { HideableElement } from '@/types/hideable';
 import { Selectors } from '@/config/selectors';
 
 /**

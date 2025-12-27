@@ -3,7 +3,7 @@
  * Generates a sticky ToC for article pages
  */
 
-import type { ExtensionSettings } from '@/types';
+import type { ExtensionSettings } from '@/types/settings';
 import { Selectors } from '@/config/selectors';
 
 // Store the observer globally so we can disconnect it on re-render

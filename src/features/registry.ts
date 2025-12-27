@@ -3,7 +3,8 @@
  * Central management for all extension features
  */
 
-import type { ExtensionSettings, Feature, FeatureContext } from '@/types';
+import type { ExtensionSettings } from '@/types/settings';
+import type { Feature, FeatureContext } from '@/types/feature';
 
 /**
  * Registry of all features

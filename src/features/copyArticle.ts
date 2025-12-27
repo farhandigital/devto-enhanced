@@ -3,7 +3,7 @@
  * Allows copying article content in Markdown format
  */
 
-import type { ExtensionSettings } from '@/types';
+import type { ExtensionSettings } from '@/types/settings';
 import { Selectors } from '@/config/selectors';
 
 /**

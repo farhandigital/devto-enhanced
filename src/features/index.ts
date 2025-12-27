@@ -4,12 +4,12 @@
  */
 
 import { registerFeature } from '@/features/registry';
-import { applyLayoutCleaning } from '@/features/layoutCleaner';
-import { handleEngagementButtons } from '@/features/articleActionMover';
-import { renderReadingStats } from '@/features/readingStats';
-import { renderTableOfContents } from '@/features/tocGenerator';
-import { renderCopyArticleButton } from '@/features/copyArticle';
-import { handleArticleCentering } from '@/features/articleCentering';
+import { applyLayoutCleaning } from './layoutCleaner';
+import { handleEngagementButtons } from './articleActionMover';
+import { renderReadingStats } from './readingStats';
+import { renderTableOfContents } from './tocGenerator';
+import { renderCopyArticleButton } from './copyArticle';
+import { handleArticleCentering } from './articleCentering';
 
 // Register hide subforem switcher (global)
 registerFeature({

@@ -3,7 +3,7 @@
  * Centers article content when sidebars are hidden
  */
 
-import type { ExtensionSettings } from '@/types';
+import type { ExtensionSettings } from '@/types/settings';
 import { PageDetector } from '@/utils/pageDetector';
 
 /**

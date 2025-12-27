@@ -3,7 +3,7 @@
  * Handles hiding/showing UI elements based on settings
  */
 
-import type { ExtensionSettings } from '@/types';
+import type { ExtensionSettings } from '@/types/settings';
 import { PageDetector } from '@/utils/pageDetector';
 import { HIDEABLE_ELEMENTS, getSettingValue } from '@/config/hideableElements';
 

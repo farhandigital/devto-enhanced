@@ -3,7 +3,7 @@ import { executeFeatures } from '@/features/registry';
 import { PageDetector } from '@/utils/pageDetector';
 import { Selectors } from '@/config/selectors';
 import { settingsStorage } from '@/utils/storage';
-import type { ExtensionSettings } from '@/types';
+import type { ExtensionSettings } from '@/types/settings';
 import './devto.css';
 
 /** Normalize PageDetector result to feature registry context */

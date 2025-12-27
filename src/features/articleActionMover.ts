@@ -3,7 +3,7 @@
  * Handles moving engagement buttons to the article header area
  */
 
-import type { ExtensionSettings } from '@/types';
+import type { ExtensionSettings } from '@/types/settings';
 import { PageDetector } from '@/utils/pageDetector';
 import { Selectors } from '@/config/selectors';
 

@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { settingsStorage, updateSetting } from '@/utils/storage';
-  import type { ExtensionSettings, Feature } from '@/types';
-  import { DEFAULT_SETTINGS } from '@/types';
+  import type { ExtensionSettings } from '@/types/settings';
+  import type { Feature } from '@/types/feature';
+  import { DEFAULT_SETTINGS } from '@/types/settings';
   import { getUIFeatures } from '@/features/registry';
   import iconUrl from '/icon.png';
 
