@@ -3,6 +3,8 @@
   import { settingsStorage, updateSetting } from '@/utils/storage';
   import type { ExtensionSettings } from '@/utils/types';
   import { DEFAULT_SETTINGS } from '@/utils/types';
+  import { getUIFeatures } from '@/utils/featureRegistry';
+  import type { Feature } from '@/utils/featureRegistry';
   import iconUrl from '/icon.png';
 
   let settings = $state<ExtensionSettings>(DEFAULT_SETTINGS);
@@ -10,45 +12,34 @@
   let loadError = $state<string | null>(null);
   let isLoading = $state(true);
 
-  type ToggleItem<K extends keyof ExtensionSettings> = {
-    key: keyof ExtensionSettings[K];
-    label: string;
-  };
-
-  type ToggleSection<K extends keyof ExtensionSettings> = {
-    section: K;
+  type ToggleSection = {
+    section: keyof ExtensionSettings;
     title: string;
-    items: ToggleItem<K>[];
+    features: Feature[];
   };
 
-  const toggleConfig: (ToggleSection<'global'> | ToggleSection<'article'> | ToggleSection<'home'>)[] = [
+  // Import features to ensure they are registered
+  import '@/utils/features';
+
+  // Build toggle config from registered features
+  const uiFeatures = getUIFeatures();
+  const toggleConfig: ToggleSection[] = [
     {
       section: 'global' as const,
       title: 'Global',
-      items: [
-        { key: 'hideSubforemSwitcher', label: 'Hide Subforem Switcher' },
-      ],
+      features: uiFeatures.global,
     },
     {
       section: 'home' as const,
       title: 'Homepage',
-      items: [
-        { key: 'hideLeftSidebar', label: 'Hide Left Sidebar' },
-        { key: 'hideRightSidebar', label: 'Hide Right Sidebar' },
-      ],
+      features: uiFeatures.home,
     },
     {
       section: 'article' as const,
       title: 'Article Page',
-      items: [
-        { key: 'hideRightSidebar', label: 'Hide Right Sidebar' },
-        { key: 'moveEngagement', label: 'Move Engagement Buttons' },
-        { key: 'showToC', label: 'Sticky Table of Contents' },
-        { key: 'showReadingStats', label: 'Reading Stats' },
-        { key: 'showCopyButton', label: 'Copy Article Button' },
-      ],
+      features: uiFeatures.article,
     },
-  ];
+  ].filter((section) => section.features.length > 0);
 
   onMount(async () => {
     try {
@@ -81,14 +72,15 @@
     }
   });
 
-  async function handleToggle<K extends keyof ExtensionSettings>(
-    section: K,
-    key: keyof ExtensionSettings[K],
-    e: Event
-  ) {
+  async function handleToggle(feature: Feature, e: Event) {
     const target = e.target as HTMLInputElement;
+    const { section, key } = feature.settingKey;
     try {
-      await updateSetting(section, key, target.checked);
+      await updateSetting(
+        section,
+        key as keyof ExtensionSettings[typeof section],
+        target.checked
+      );
     } catch (error) {
       console.error('Failed to update setting:', error);
       // Revert the checkbox state on error
@@ -96,11 +88,14 @@
     }
   }
 
-  function getSettingValue<K extends keyof ExtensionSettings>(
-    section: K,
-    key: keyof ExtensionSettings[K]
-  ): boolean {
-    return settings[section][key] as boolean;
+  function getSettingValue(feature: Feature): boolean {
+    const { section, key } = feature.settingKey;
+    const sectionSettings = settings[section];
+    return (sectionSettings as Record<string, boolean>)[key] ?? false;
+  }
+
+  function getEmoji(featureType: 'hide' | 'add'): string {
+    return featureType === 'hide' ? '🧹' : '⚡';
   }
 </script>
 
@@ -119,20 +114,27 @@
   {#if isLoading}
     <div class="loading-state">Loading settings...</div>
   {:else}
-    {#each toggleConfig as { section, title, items }}
+    <div class="legend">
+      <span class="legend-item"><span class="emoji">🧹</span> Clean clutter</span>
+      <span class="legend-item"><span class="emoji">⚡</span> Add features</span>
+    </div>
+
+    {#each toggleConfig as { section, title, features }}
       <section>
         <h3>{title}</h3>
-        {#each items as item}
-          {@const itemKey = item.key as keyof ExtensionSettings[typeof section]}
+        {#each features as feature}
           <div class="toggle-row">
-            <span class="toggle-label" id="{section}-{item.key}-label">{item.label}</span>
-            <label class="switch" for="{section}-{item.key}">
+            <span class="toggle-label" id="{section}-{feature.settingKey.key}-label">
+              <span class="emoji">{getEmoji(feature.type)}</span>
+              {feature.label}
+            </span>
+            <label class="switch" for="{section}-{feature.settingKey.key}">
               <input 
                 type="checkbox" 
-                id="{section}-{item.key}"
-                checked={getSettingValue(section, itemKey)} 
-                onchange={(e) => handleToggle(section, itemKey, e)}
-                aria-labelledby="{section}-{item.key}-label"
+                id="{section}-{feature.settingKey.key}"
+                checked={getSettingValue(feature)} 
+                onchange={(e) => handleToggle(feature, e)}
+                aria-labelledby="{section}-{feature.settingKey.key}-label"
               >
               <span class="slider" aria-hidden="true"></span>
             </label>

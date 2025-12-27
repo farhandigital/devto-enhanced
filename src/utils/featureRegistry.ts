@@ -10,6 +10,18 @@ export interface Feature {
   /** Context(s) where this feature should run */
   context: readonly ('global' | 'article' | 'home' | 'other')[];
   
+  /** Feature type - whether it hides UI elements or adds functionality */
+  type: 'hide' | 'add';
+  
+  /** Mapping to setting key path for UI */
+  settingKey: {
+    section: keyof ExtensionSettings;
+    key: string;
+  };
+  
+  /** Display label for UI */
+  label: string;
+  
   /** Execute the feature with current settings */
   execute: (settings: ExtensionSettings) => void;
   
@@ -51,6 +63,17 @@ export function getFeaturesForContext(
   context: 'global' | 'article' | 'home' | 'other'
 ): Feature[] {
   return features.filter((feature) => feature.context.includes(context));
+}
+
+/**
+ * Get features for UI display grouped by context
+ */
+export function getUIFeatures() {
+  return {
+    global: features.filter((f) => f.context.includes('global')),
+    home: features.filter((f) => f.context.includes('home') && !f.context.includes('global')),
+    article: features.filter((f) => f.context.includes('article') && !f.context.includes('global')),
+  };
 }
 
 /**
