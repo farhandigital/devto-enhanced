@@ -313,14 +313,22 @@ body.dt-center-article article.crayons-article {
   margin: 0 auto;
 }
 
-/* Hide empty sidebars completely to achieve full centering */
-body.dt-center-article #sidebar-wrapper-left,
+/* Keep left sidebar for engagement actions, hide right sidebar */
 body.dt-center-article .crayons-layout__sidebar-right {
   display: none;
 }
 
-/* Adjust grid layout to single column centered */
+/* Make left sidebar narrow and hide all children except engagement actions */
+body.dt-center-article #sidebar-wrapper-left {
+  width: auto;
+}
+
+body.dt-center-article #sidebar-wrapper-left > *:not(.crayons-article-actions) {
+  display: none;
+}
+
+/* Adjust grid layout to keep left sidebar + centered content */
 body.dt-center-article .crayons-layout {
-  grid-template-columns: 1fr;
+  grid-template-columns: auto 1fr;
   justify-items: center;
 }
