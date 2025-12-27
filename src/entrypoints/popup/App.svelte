@@ -13,6 +13,7 @@
   type ToggleItem<K extends keyof ExtensionSettings> = {
     key: keyof ExtensionSettings[K];
     label: string;
+    emoji: string;
   };
 
   type ToggleSection<K extends keyof ExtensionSettings> = {
@@ -26,26 +27,26 @@
       section: 'global' as const,
       title: 'Global',
       items: [
-        { key: 'hideSubforemSwitcher', label: 'Hide Subforem Switcher' },
+        { key: 'hideSubforemSwitcher', label: 'Hide Subforem Switcher', emoji: '🧹' },
       ],
     },
     {
       section: 'home' as const,
       title: 'Homepage',
       items: [
-        { key: 'hideLeftSidebar', label: 'Hide Left Sidebar' },
-        { key: 'hideRightSidebar', label: 'Hide Right Sidebar' },
+        { key: 'hideLeftSidebar', label: 'Hide Left Sidebar', emoji: '🧹' },
+        { key: 'hideRightSidebar', label: 'Hide Right Sidebar', emoji: '🧹' },
       ],
     },
     {
       section: 'article' as const,
       title: 'Article Page',
       items: [
-        { key: 'hideRightSidebar', label: 'Hide Right Sidebar' },
-        { key: 'moveEngagement', label: 'Move Engagement Buttons' },
-        { key: 'showToC', label: 'Sticky Table of Contents' },
-        { key: 'showReadingStats', label: 'Reading Stats' },
-        { key: 'showCopyButton', label: 'Copy Article Button' },
+        { key: 'hideRightSidebar', label: 'Hide Right Sidebar', emoji: '🧹' },
+        { key: 'moveEngagement', label: 'Move Engagement Buttons', emoji: '🧹' },
+        { key: 'showToC', label: 'Sticky Table of Contents', emoji: '⚡' },
+        { key: 'showReadingStats', label: 'Reading Stats', emoji: '⚡' },
+        { key: 'showCopyButton', label: 'Copy Article Button', emoji: '⚡' },
       ],
     },
   ];
@@ -119,13 +120,21 @@
   {#if isLoading}
     <div class="loading-state">Loading settings...</div>
   {:else}
+    <div class="legend">
+      <span class="legend-item"><span class="emoji">🧹</span> Clean clutter</span>
+      <span class="legend-item"><span class="emoji">⚡</span> Add features</span>
+    </div>
+
     {#each toggleConfig as { section, title, items }}
       <section>
         <h3>{title}</h3>
         {#each items as item}
           {@const itemKey = item.key as keyof ExtensionSettings[typeof section]}
           <div class="toggle-row">
-            <span class="toggle-label" id="{section}-{item.key}-label">{item.label}</span>
+            <span class="toggle-label" id="{section}-{item.key}-label">
+              <span class="emoji">{item.emoji}</span>
+              {item.label}
+            </span>
             <label class="switch" for="{section}-{item.key}">
               <input 
                 type="checkbox" 
