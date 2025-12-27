@@ -3,7 +3,7 @@
  * Import and register all features here for automatic orchestration
  */
 
-import { registerFeature } from '@/features/registry';
+import { registerFeature } from './registry';
 import { applyLayoutCleaning } from './layoutCleaner';
 import { handleEngagementButtons } from './articleActionMover';
 import { renderReadingStats } from './readingStats';
