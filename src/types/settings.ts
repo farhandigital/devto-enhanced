@@ -1,3 +1,8 @@
+/**
+ * Extension settings type definitions
+ * Defines the structure of user-configurable options
+ */
+
 export interface ExtensionSettings {
   // Global Features (all pages)
   global: {

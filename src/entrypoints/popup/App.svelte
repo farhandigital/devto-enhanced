@@ -1,10 +1,9 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { settingsStorage, updateSetting } from '@/utils/storage';
-  import type { ExtensionSettings } from '@/utils/types';
-  import { DEFAULT_SETTINGS } from '@/utils/types';
-  import { getUIFeatures } from '@/utils/featureRegistry';
-  import type { Feature } from '@/utils/featureRegistry';
+  import type { ExtensionSettings, Feature } from '@/types';
+  import { DEFAULT_SETTINGS } from '@/types';
+  import { getUIFeatures } from '@/features/registry';
   import iconUrl from '/icon.png';
 
   let settings = $state<ExtensionSettings>(DEFAULT_SETTINGS);
@@ -19,7 +18,7 @@
   };
 
   // Import features to ensure they are registered
-  import '@/utils/features';
+  import '@/features';
 
   // Build toggle config from registered features
   const uiFeatures = getUIFeatures();

@@ -1,21 +1,5 @@
-import type { ExtensionSettings } from '@/utils/types';
+import type { ExtensionSettings, HideableElement } from '@/types';
 import { Selectors } from '@/utils/selectors';
-
-/**
- * Configuration for elements that can be hidden via settings
- * Declarative approach: add a new entry here to support hiding a new element
- */
-
-export interface HideableElement {
-  /** CSS selector to target */
-  selector: string;
-  /** Path to the setting that controls this element (e.g., 'global.hideSubforemSwitcher') */
-  settingPath: string;
-  /** CSS class to apply when hiding is enabled */
-  cssClass: string;
-  /** Context where this element should be hidden */
-  context: 'global' | 'article' | 'home';
-}
 
 /**
  * Declarative configuration for all hideable elements

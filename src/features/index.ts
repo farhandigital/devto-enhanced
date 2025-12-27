@@ -3,13 +3,13 @@
  * Import and register all features here for automatic orchestration
  */
 
-import { registerFeature } from '@/utils/featureRegistry';
-import { applyLayoutCleaning } from '@/utils/features/layoutCleaner';
-import { handleEngagementButtons } from '@/utils/features/articleActionMover';
-import { renderReadingStats } from '@/utils/features/readingStats';
-import { renderTableOfContents } from '@/utils/features/tocGenerator';
-import { renderCopyArticleButton } from '@/utils/features/copyArticle';
-import { handleArticleCentering } from '@/utils/features/articleCentering';
+import { registerFeature } from '@/features/registry';
+import { applyLayoutCleaning } from '@/features/layoutCleaner';
+import { handleEngagementButtons } from '@/features/articleActionMover';
+import { renderReadingStats } from '@/features/readingStats';
+import { renderTableOfContents } from '@/features/tocGenerator';
+import { renderCopyArticleButton } from '@/features/copyArticle';
+import { handleArticleCentering } from '@/features/articleCentering';
 
 // Register hide subforem switcher (global)
 registerFeature({

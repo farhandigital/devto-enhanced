@@ -1,4 +1,9 @@
-import type { ExtensionSettings } from '@/utils/types';
+/**
+ * Reading Stats Feature
+ * Displays word count and estimated reading time
+ */
+
+import type { ExtensionSettings } from '@/types';
 import { Selectors } from '@/utils/selectors';
 
 export function renderReadingStats(settings: ExtensionSettings) {
@@ -23,15 +28,15 @@ export function renderReadingStats(settings: ExtensionSettings) {
   const statsContainer = document.createElement('div');
   statsContainer.id = 'dt-reading-stats';
   statsContainer.className = 'dt-reading-stats';
-  
+
   const wordBadge = document.createElement('span');
   wordBadge.className = 'dt-stat-badge';
   wordBadge.textContent = `📝 ${wordCount.toLocaleString()} words`;
-  
+
   const timeBadge = document.createElement('span');
   timeBadge.className = 'dt-stat-badge';
   timeBadge.textContent = `⏱️ ${readTime} min read`;
-  
+
   statsContainer.appendChild(wordBadge);
   statsContainer.appendChild(timeBadge);
 
