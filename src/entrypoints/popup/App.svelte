@@ -97,6 +97,29 @@
   function getEmoji(featureType: 'hide' | 'add'): string {
     return featureType === 'hide' ? '🧹' : '⚡';
   }
+
+  function isFeatureEnabled(feature: Feature): boolean {
+    // Special case: centerArticle requires right sidebar hidden AND ToC disabled
+    if (feature.settingKey.section === 'article' && feature.settingKey.key === 'centerArticle') {
+      return settings.article.hideRightSidebar && !settings.article.showToC;
+    }
+    return true; // All other features are always enabled
+  }
+
+  function getDisabledTooltip(feature: Feature): string | null {
+    if (feature.settingKey.section === 'article' && feature.settingKey.key === 'centerArticle') {
+      if (!settings.article.hideRightSidebar && settings.article.showToC) {
+        return 'Requires: Right Sidebar hidden AND ToC disabled';
+      }
+      if (!settings.article.hideRightSidebar) {
+        return 'Requires: Right Sidebar hidden';
+      }
+      if (settings.article.showToC) {
+        return 'Requires: ToC disabled';
+      }
+    }
+    return null;
+  }
 </script>
 
 <main>
@@ -123,10 +146,15 @@
       <section>
         <h3>{title}</h3>
         {#each features as feature}
-          <div class="toggle-row">
+          {@const enabled = isFeatureEnabled(feature)}
+          {@const tooltip = getDisabledTooltip(feature)}
+          <div class="toggle-row" class:disabled={!enabled}>
             <span class="toggle-label" id="{section}-{feature.settingKey.key}-label">
               <span class="emoji">{getEmoji(feature.type)}</span>
               {feature.label}
+              {#if tooltip}
+                <span class="tooltip-icon" title={tooltip}>ℹ️</span>
+              {/if}
             </span>
             <label class="switch" for="{section}-{feature.settingKey.key}">
               <input 
@@ -135,6 +163,7 @@
                 checked={getSettingValue(feature)} 
                 onchange={(e) => handleToggle(feature, e)}
                 aria-labelledby="{section}-{feature.settingKey.key}-label"
+                disabled={!enabled}
               >
               <span class="slider" aria-hidden="true"></span>
             </label>
