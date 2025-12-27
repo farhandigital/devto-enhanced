@@ -227,7 +227,7 @@ Contributions are welcome! Feel free to:
 1. **Fork the repository** and create a new branch for your feature/fix
 2. **Test thoroughly** — Test on both Chrome and Firefox if possible
 3. **Use conventional commits** — Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification
-5. **Submit a Pull Request** with a clear description of your changes
+4. **Submit a Pull Request** with a clear description of your changes
 
 ### Reporting Issues
 
