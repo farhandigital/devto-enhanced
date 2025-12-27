@@ -153,6 +153,7 @@ src/
 The extension uses a declarative feature registry system. To add a new feature:
 
 1. **Create the feature implementation** in `src/utils/features/yourFeature.ts`:
+
 ```typescript
 export function yourFeature(settings: ExtensionSettings) {
   // Your feature logic here
@@ -160,6 +161,7 @@ export function yourFeature(settings: ExtensionSettings) {
 ```
 
 2. **Register the feature** in `src/utils/features/index.ts`:
+
 ```typescript
 registerFeature({
   name: 'yourFeatureName',
@@ -172,6 +174,7 @@ registerFeature({
 ```
 
 3. **Add the setting** to `src/utils/types.ts`:
+
 ```typescript
 export interface ExtensionSettings {
   article: {
