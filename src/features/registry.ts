@@ -34,14 +34,22 @@ export function getAllFeatures(): readonly Feature[] {
 }
 
 /**
- * Get features applicable to a specific context
+ * Retrieve registered features that apply to the given context.
+ *
+ * @param context - The feature context to filter by
+ * @returns An array of features whose `context` includes the provided `context`
  */
 export function getFeaturesForContext(context: FeatureContext): Feature[] {
   return features.filter((feature) => feature.context.includes(context));
 }
 
 /**
- * Get features for UI display grouped by context
+ * Group registered features for UI presentation by their applicable contexts.
+ *
+ * @returns An object with `global`, `home`, and `article` arrays of features:
+ * - `global`: features whose context includes `'global'`
+ * - `home`: features whose context includes `'home'` but not `'global'`
+ * - `article`: features whose context includes `'article'` but not `'global'`
  */
 export function getUIFeatures() {
   return {

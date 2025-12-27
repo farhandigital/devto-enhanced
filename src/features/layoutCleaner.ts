@@ -8,8 +8,11 @@ import { PageDetector } from '@/utils/pageDetector';
 import { HIDEABLE_ELEMENTS, getSettingValue } from '@/config/hideableElements';
 
 /**
- * Toggles CSS classes on the body to hide/show elements based on settings
- * Uses declarative configuration from HIDEABLE_ELEMENTS
+ * Apply or remove CSS classes on document.body to hide or show UI elements based on settings and current page context.
+ *
+ * Performs a two-pass update: first it applies classes for elements whose context is global or matches the current page when their setting is enabled, then it removes classes for elements not applicable to the current context only if those classes were not applied during the first pass.
+ *
+ * @param settings - Extension settings used to determine which hideable elements are enabled
  */
 export function applyLayoutCleaning(settings: ExtensionSettings) {
   const pageType = PageDetector.getPageType();

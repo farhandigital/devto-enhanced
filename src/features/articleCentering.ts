@@ -7,8 +7,9 @@ import type { ExtensionSettings } from '@/types/settings';
 import { PageDetector } from '@/utils/pageDetector';
 
 /**
- * Centers the article content when right sidebar is completely empty
- * Only activates when user explicitly enables the setting
+ * Centers article content by toggling the 'dt-center-article' class on document.body when the right sidebar is hidden and the table of contents is disabled.
+ *
+ * @param settings - Extension settings used to determine whether article centering should be applied
  */
 export function handleArticleCentering(settings: ExtensionSettings) {
   if (!PageDetector.isArticle()) return;

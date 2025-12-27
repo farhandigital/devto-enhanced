@@ -7,6 +7,13 @@ import type { ExtensionSettings } from '@/types/settings';
 import { PageDetector } from '@/utils/pageDetector';
 import { Selectors } from '@/config/selectors';
 
+/**
+ * Move the article engagement buttons into the article header or restore them to their original location based on extension settings.
+ *
+ * If the current page is not an article or the engagement container cannot be found, the function does nothing. When `settings.article.moveEngagement` is truthy, the function records the container's original parent/next-sibling and inserts the container immediately after the article H1. When `settings.article.moveEngagement` is falsy and the container was previously moved, the function attempts to restore the container to its recorded parent/position and clears the moved state.
+ *
+ * @param settings - Extension settings object; the `article.moveEngagement` flag controls whether engagement buttons are moved into the header (`true`) or restored to their original position (`false`).
+ */
 export function handleEngagementButtons(settings: ExtensionSettings) {
   if (!PageDetector.isArticle()) return;
 
@@ -76,7 +83,15 @@ export function handleEngagementButtons(settings: ExtensionSettings) {
   }
 }
 
-// Helper function to generate a unique selector for an element
+/**
+ * Generates a CSS selector that uniquely identifies the given element within the document.
+ *
+ * Tries to produce a concise selector (ID, unique class combination) and falls back to a full parent-based
+ * path using tag names and `:nth-child()` when necessary.
+ *
+ * @param element - The DOM element to generate a selector for
+ * @returns A CSS selector string that targets the provided element uniquely in the current document
+ */
 function getUniqueSelector(element: Element): string {
   // Try to use ID if available
   if (element.id) {
