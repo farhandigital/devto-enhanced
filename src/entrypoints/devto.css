@@ -301,7 +301,7 @@ body.dark-theme .dt-copy-article-btn.dt-copy-error:hover {
 }
 
 /* --- Article Centering --- */
-/* Only applies when both sidebars are hidden AND ToC is disabled */
+/* Only applies when right sidebar is hidden AND ToC is disabled */
 body.dt-center-article .crayons-layout__content {
   max-width: 820px;
   margin: 0 auto;
@@ -313,12 +313,12 @@ body.dt-center-article article.crayons-article {
   margin: 0 auto;
 }
 
-/* Keep left sidebar for engagement actions, hide right sidebar */
+/* Hide right sidebar */
 body.dt-center-article .crayons-layout__sidebar-right {
   display: none;
 }
 
-/* Make left sidebar narrow and hide all children except engagement actions */
+/* Keep engagement actions container, hide other children */
 body.dt-center-article #sidebar-wrapper-left {
   width: auto;
 }
@@ -327,7 +327,7 @@ body.dt-center-article #sidebar-wrapper-left > *:not(.crayons-article-actions) {
   display: none;
 }
 
-/* Adjust grid layout to keep left sidebar + centered content */
+/* Adjust grid layout */
 body.dt-center-article .crayons-layout {
   grid-template-columns: auto 1fr;
   justify-items: center;
