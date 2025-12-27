@@ -142,8 +142,8 @@
     <div class="loading-state">Loading settings...</div>
   {:else}
     <div class="legend">
-      <span class="legend-item"><span class="emoji">🧹</span> <span class="prefix">{getPrefix('hide')}</span> clutter</span>
-      <span class="legend-item"><span class="emoji">⚡</span> <span class="prefix">{getPrefix('add')}</span> features</span>
+      <span class="legend-item"><span class="emoji">{getEmoji('hide')}</span> <span class="prefix">{getPrefix('hide')}</span> clutter</span>
+      <span class="legend-item"><span class="emoji">{getEmoji('add')}</span> <span class="prefix">{getPrefix('add')}</span> features</span>
     </div>
 
     {#each toggleConfig as { section, title, features }}
