@@ -40,7 +40,6 @@ The extension uses a feature registry system to:
 1. **Apply CSS-based Layouts** — Dynamically toggle CSS classes on the document body to hide/show elements based on page context
 2. **Inject Dynamic Features** — Render UI enhancements (ToC, reading stats, copy button) directly into the page DOM
 3. **Handle SPA Navigation** — Monitor DOM changes and URL transitions to re-apply features when navigating between pages (dev.to uses SPA-style navigation)
-4. **Context-Aware Execution** — Features are registered with specific contexts (global, article, home) and only execute on relevant pages
 
 All features are **fully toggleable** via the extension popup menu, with preferences automatically persisted to browser storage and synchronized in real-time across tabs.
 
