@@ -10,6 +10,7 @@ import { renderReadingStats } from './readingStats';
 import { renderTableOfContents } from './tocGenerator';
 import { renderCopyArticleButton } from './copyArticle';
 import { handleArticleCentering } from './articleCentering';
+import { enableSmoothScroll } from './smoothScroll';
 
 // Register hide subforem switcher (global)
 registerFeature({
@@ -100,4 +101,15 @@ registerFeature({
   settingKey: { section: 'article', key: 'centerArticle' },
   label: 'Center Article',
   execute: handleArticleCentering,
+});
+
+// Register smooth scroll (article-only feature)
+// Enables smooth scrolling behavior when ToC is enabled for better UX
+registerFeature({
+  name: 'smoothScroll',
+  context: ['article'],
+  type: 'add',
+  settingKey: { section: 'article', key: 'showToC' },
+  label: 'Smooth Scroll',
+  execute: enableSmoothScroll,
 });
