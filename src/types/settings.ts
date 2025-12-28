@@ -16,6 +16,7 @@ export interface ExtensionSettings {
     showReadingStats: boolean;
     showCopyButton: boolean;
     centerArticle: boolean;
+    enableSmoothScroll: boolean;
   };
   // Homepage Features
   home: {
@@ -35,6 +36,7 @@ export const DEFAULT_SETTINGS: ExtensionSettings = {
     showReadingStats: true,
     showCopyButton: true,
     centerArticle: false,
+    enableSmoothScroll: true,
   },
   home: {
     hideLeftSidebar: true,

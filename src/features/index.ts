@@ -104,12 +104,13 @@ registerFeature({
 });
 
 // Register smooth scroll (article-only feature)
-// Enables smooth scrolling behavior when ToC is enabled for better UX
+// Enables smooth scrolling behavior for better UX when navigating
+// Can be toggled independently from ToC
 registerFeature({
   name: 'smoothScroll',
   context: ['article'],
   type: 'add',
-  settingKey: { section: 'article', key: 'showToC' },
+  settingKey: { section: 'article', key: 'enableSmoothScroll' },
   label: 'Smooth Scroll',
   execute: enableSmoothScroll,
 });

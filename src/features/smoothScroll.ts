@@ -7,9 +7,8 @@
 import type { ExtensionSettings } from '@/types/settings';
 
 export function enableSmoothScroll(settings: ExtensionSettings) {
-  // Only enable smooth scroll on article pages
-  // The setting is linked to ToC being enabled, since smooth scroll is primarily for ToC navigation
-  if (settings.article.showToC) {
+  // Smooth scroll is independently configurable
+  if (settings.article.enableSmoothScroll) {
     document.documentElement.classList.add('dt-smooth-scroll-enabled');
   } else {
     document.documentElement.classList.remove('dt-smooth-scroll-enabled');
