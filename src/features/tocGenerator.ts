@@ -47,7 +47,7 @@ export function renderTableOfContents(settings: ExtensionSettings) {
   // If no sidebar exists, we can't inject the ToC
   if (!rightSidebar) return;
 
-  // Create Container\
+  // Create Container
   const tocContainer = document.createElement('div');
   tocContainer.id = 'dt-toc';
   tocContainer.className = 'dt-toc-container';
