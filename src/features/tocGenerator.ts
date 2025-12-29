@@ -24,8 +24,6 @@ export function renderTableOfContents(settings: ExtensionSettings) {
   if (existingToC) existingToC.remove();
 
   if (!settings.article.showToC || !articleBody) {
-    // Disable smooth scroll if not on an article page
-    document.documentElement.classList.remove('dt-smooth-scroll-enabled');
     return;
   }
 
@@ -89,9 +87,6 @@ export function renderTableOfContents(settings: ExtensionSettings) {
 
   // Inject ToC as the last item in the right sidebar
   rightSidebar.appendChild(tocContainer);
-
-  // Enable smooth scrolling only on article pages after ToC is ready
-  document.documentElement.classList.add('dt-smooth-scroll-enabled');
 
   // Setup intersection observer for active section highlighting
   setupActiveHeadingObserver(allHeadings, tocContainer);

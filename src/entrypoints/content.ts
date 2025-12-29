@@ -6,29 +6,15 @@ import { settingsStorage } from '@/utils/storage';
 import type { ExtensionSettings } from '@/types/settings';
 import './devto.css';
 
-/** Normalize PageDetector result to feature registry context */
 function getFeatureContext(): 'article' | 'home' | 'other' {
   const pageType = PageDetector.getPageType();
   return pageType === 'article' || pageType === 'home' ? pageType : 'other';
 }
 
 const state = {
-  debounceTimer: null as ReturnType<typeof setTimeout> | null,
   observer: null as MutationObserver | null,
   initialized: false,
 };
-
-function updateSmoothScrollState(): void {
-  const isArticle = PageDetector.isArticle();
-  
-  if (isArticle) {
-    // Enable smooth scroll on article pages (after ToC is ready)
-    // The actual enabling happens in tocGenerator when ToC is rendered
-  } else {
-    // Disable smooth scroll on non-article pages
-    document.documentElement.classList.remove('dt-smooth-scroll-enabled');
-  }
-}
 
 export default defineContentScript({
   matches: ['https://dev.to/*'],
@@ -50,13 +36,7 @@ export default defineContentScript({
       }
     });
 
-    // 3. Handle SPA navigation with wxt:locationchange event specifically for cleaning up smooth scroll state
-    // We could've used URL watcher to replace the entire mutation observer, but unfortunately the event doesn't fire fast enough to prevent layout shifts on navigation.
-    ctx.addEventListener(window, 'wxt:locationchange', () => {
-      updateSmoothScrollState();
-    });
-
-    // 4. Handle Dev.to SPA navigation (InstantClick/Turbo)
+    // 3. Handle Dev.to SPA navigation (InstantClick/Turbo)
     state.observer = new MutationObserver((mutations) => {
       // Filter out mutations from our injected elements to prevent infinite loops
       const relevantMutations = mutations.filter(mutation => {
