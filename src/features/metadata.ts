@@ -101,16 +101,3 @@ registerFeature({
 	label: "Center Article",
 	execute: () => {},
 });
-
-// Register smooth scroll (runs on all pages but only enables on article)
-// Enables smooth scrolling behavior for better UX when navigating
-// Can be toggled independently from ToC
-// Runs on all contexts to ensure cleanup when navigating away from articles
-registerFeature({
-	name: "smoothScroll",
-	context: ["article", "home", "other"],
-	type: "add",
-	settingKey: { section: "article", key: "enableSmoothScroll" },
-	label: "Smooth Scroll",
-	execute: () => {},
-});

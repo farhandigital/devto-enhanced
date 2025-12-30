@@ -93,13 +93,6 @@ export const featureDefinitions: readonly FeatureDefinition[] = [
 		settingKey: { section: "article", key: "centerArticle" },
 		label: "Center Article",
 	},
-	{
-		name: "smoothScroll",
-		context: ["article", "home", "other"],
-		type: "add",
-		settingKey: { section: "article", key: "enableSmoothScroll" },
-		label: "Smooth Scroll",
-	},
 ] as const;
 
 /**
