@@ -140,7 +140,7 @@ src/
 ├── features/            # Feature System
 │   ├── feature-definitions.ts # Shared feature metadata
 │   ├── index.ts         # Feature registration (with logic)
-│   ├── metadata.ts      # Feature registration (metadata only)
+│   ├── metadata.ts      # Feature registration (dupe for popup perf)
 │   ├── registry.ts      # Core registry logic
 │   └── ...              # Individual feature implementations
 ├── types/               # TypeScript Definitions
@@ -156,17 +156,21 @@ src/
 
 The extension uses a declarative feature registry system with a split between metadata and implementation to optimize popup performance. To add a new feature:
 
-1. **Define the Metadata** in `src/features/feature-definitions.ts`:
+1. **Define the Metadata**:
 
-```typescript
-{
-  name: "yourFeature",
-  context: ["article"], // or ["home", "global"]
-  type: "add", // or "hide"
-  settingKey: { section: "article", key: "yourFeature" },
-  label: "Your Feature Label",
-},
-```
+   Add the definition to **BOTH** `src/features/feature-definitions.ts` (for content script) and `src/features/metadata.ts` (for popup).
+
+   > **Note**: Metadata must be manually duplicated in `metadata.ts` to keep the popup bundle completely decoupled and instant.
+
+   ```typescript
+   {
+    name: "yourFeature",
+    context: ["article"], // or ["home", "global"]
+    type: "add", // or "hide"
+    settingKey: { section: "article", key: "yourFeature" },
+    label: "Your Feature Label",
+   },
+   ```
 
 2. **Create the Implementation** in `src/features/yourFeature.ts`:
 
