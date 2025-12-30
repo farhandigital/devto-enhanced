@@ -41,7 +41,14 @@ export function getFeaturesForContext(context: FeatureContext): Feature[] {
 }
 
 /**
+ * Feature metadata (without execute function)
+ * Used for lightweight UI display in popup
+ */
+export type FeatureMetadata = Omit<Feature, "execute">;
+
+/**
  * Get features for UI display grouped by context
+ * @deprecated Use getUIFeaturesMetadata() instead for popup UI
  */
 export function getUIFeatures() {
 	return {
@@ -52,6 +59,40 @@ export function getUIFeatures() {
 		article: features.filter(
 			(f) => f.context.includes("article") && !f.context.includes("global"),
 		),
+	};
+}
+
+/**
+ * Get feature metadata for UI display grouped by context
+ * Returns only the metadata without execute functions for lightweight popup use
+ */
+export function getUIFeaturesMetadata(): {
+	global: FeatureMetadata[];
+	home: FeatureMetadata[];
+	article: FeatureMetadata[];
+} {
+	const toMetadata = (f: Feature): FeatureMetadata => ({
+		name: f.name,
+		context: f.context,
+		type: f.type,
+		settingKey: f.settingKey,
+		label: f.label,
+	});
+
+	return {
+		global: features
+			.filter((f) => f.context.includes("global"))
+			.map(toMetadata),
+		home: features
+			.filter(
+				(f) => f.context.includes("home") && !f.context.includes("global"),
+			)
+			.map(toMetadata),
+		article: features
+			.filter(
+				(f) => f.context.includes("article") && !f.context.includes("global"),
+			)
+			.map(toMetadata),
 	};
 }
 
