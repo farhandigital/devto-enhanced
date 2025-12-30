@@ -1,117 +1,46 @@
 /**
- * Feature registration file
- * Import and register all features here for automatic orchestration
+ * Feature registration file for content script
+ * Uses shared feature definitions and maps them to real execute functions.
+ * This is the full feature bundle with actual implementations.
  */
 
+import type { ExtensionSettings } from "@/types/settings";
 import { handleEngagementButtons } from "./articleActionMover";
 import { handleArticleCentering } from "./articleCentering";
 import { renderCopyArticleButton } from "./copyArticle";
+import { getFeatureDefinition } from "./feature-definitions";
 import { applyLayoutCleaning } from "./layoutCleaner";
 import { renderReadingStats } from "./readingStats";
 import { registerFeature } from "./registry";
 import { enableSmoothScroll } from "./smoothScroll";
 import { renderTableOfContents } from "./tocGenerator";
 
-// Register hide subforem switcher (global)
-registerFeature({
-	name: "hideSubforemSwitcher",
-	context: ["global"],
-	type: "hide",
-	settingKey: { section: "global", key: "hideSubforemSwitcher" },
-	label: "Subforem Switcher",
-	execute: applyLayoutCleaning,
-});
+/**
+ * Map of feature names to their execute functions
+ * This is the only place where feature name -> implementation mapping exists
+ */
+const executeMap: Record<string, (settings: ExtensionSettings) => void> = {
+	hideSubforemSwitcher: applyLayoutCleaning,
+	hideLeftSidebar: applyLayoutCleaning,
+	hideRightSidebarHome: applyLayoutCleaning,
+	hideRightSidebarArticle: applyLayoutCleaning,
+	engagementButtonMover: handleEngagementButtons,
+	readingStats: renderReadingStats,
+	tableOfContents: renderTableOfContents,
+	copyArticleButton: renderCopyArticleButton,
+	centerArticle: handleArticleCentering,
+	smoothScroll: enableSmoothScroll,
+};
 
-// Register hide left sidebar (home)
-registerFeature({
-	name: "hideLeftSidebar",
-	context: ["home"],
-	type: "hide",
-	settingKey: { section: "home", key: "hideLeftSidebar" },
-	label: "Left Sidebar",
-	execute: applyLayoutCleaning,
-});
-
-// Register hide right sidebar (home)
-registerFeature({
-	name: "hideRightSidebarHome",
-	context: ["home"],
-	type: "hide",
-	settingKey: { section: "home", key: "hideRightSidebar" },
-	label: "Right Sidebar",
-	execute: applyLayoutCleaning,
-});
-
-// Register hide right sidebar (article)
-registerFeature({
-	name: "hideRightSidebarArticle",
-	context: ["article"],
-	type: "hide",
-	settingKey: { section: "article", key: "hideRightSidebar" },
-	label: "Right Sidebar",
-	execute: applyLayoutCleaning,
-});
-
-// Register engagement button mover (article-only feature)
-registerFeature({
-	name: "engagementButtonMover",
-	context: ["article"],
-	type: "hide",
-	settingKey: { section: "article", key: "moveEngagement" },
-	label: "Move Engagement Buttons",
-	execute: handleEngagementButtons,
-});
-
-// Register reading stats (article-only feature)
-registerFeature({
-	name: "readingStats",
-	context: ["article"],
-	type: "add",
-	settingKey: { section: "article", key: "showReadingStats" },
-	label: "Reading Stats",
-	execute: renderReadingStats,
-});
-
-// Register table of contents (article-only feature)
-registerFeature({
-	name: "tableOfContents",
-	context: ["article"],
-	type: "add",
-	settingKey: { section: "article", key: "showToC" },
-	label: "Sticky Table of Contents",
-	execute: renderTableOfContents,
-});
-
-// Register copy article button (article-only feature)
-registerFeature({
-	name: "copyArticleButton",
-	context: ["article"],
-	type: "add",
-	settingKey: { section: "article", key: "showCopyButton" },
-	label: "Copy Article Button",
-	execute: renderCopyArticleButton,
-});
-
-// Register article centering (article-only feature)
-// Only activates when both sidebars hidden + ToC disabled
-registerFeature({
-	name: "centerArticle",
-	context: ["article"],
-	type: "add",
-	settingKey: { section: "article", key: "centerArticle" },
-	label: "Center Article",
-	execute: handleArticleCentering,
-});
-
-// Register smooth scroll (runs on all pages but only enables on article)
-// Enables smooth scrolling behavior for better UX when navigating
-// Can be toggled independently from ToC
-// Runs on all contexts to ensure cleanup when navigating away from articles
-registerFeature({
-	name: "smoothScroll",
-	context: ["article", "home", "other"],
-	type: "add",
-	settingKey: { section: "article", key: "enableSmoothScroll" },
-	label: "Smooth Scroll",
-	execute: enableSmoothScroll,
-});
+// Register all features with their real execute functions
+for (const [name, execute] of Object.entries(executeMap)) {
+	const definition = getFeatureDefinition(name);
+	if (!definition) {
+		console.warn(`Feature definition not found for: ${name}`);
+		continue;
+	}
+	registerFeature({
+		...definition,
+		execute,
+	});
+}
