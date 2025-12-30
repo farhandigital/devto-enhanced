@@ -25,26 +25,30 @@
   function initializeToggleConfig() {
     // Import feature metadata only (not the full implementations)
     // This is a dynamic import as a side-effect import to avoid module-level execution
-    import('@/features/metadata').then(() => {
-      const uiFeatures = getUIFeaturesMetadata();
-      toggleConfig = [
-        {
-          section: 'global' as const,
-          title: 'Global',
-          features: uiFeatures.global,
-        },
-        {
-          section: 'home' as const,
-          title: 'Homepage',
-          features: uiFeatures.home,
-        },
-        {
-          section: 'article' as const,
-          title: 'Article Page',
-          features: uiFeatures.article,
-        },
-      ].filter((section) => section.features.length > 0);
-    });
+    import('@/features/metadata')
+      .then(() => {
+        const uiFeatures = getUIFeaturesMetadata();
+        toggleConfig = [
+          {
+            section: 'global' as const,
+            title: 'Global',
+            features: uiFeatures.global,
+          },
+          {
+            section: 'home' as const,
+            title: 'Homepage',
+            features: uiFeatures.home,
+          },
+          {
+            section: 'article' as const,
+            title: 'Article Page',
+            features: uiFeatures.article,
+          },
+        ].filter((section) => section.features.length > 0);
+      })
+      .catch((error) => {
+        console.error('Failed to load feature metadata:', error);
+      });
   }
 
   onMount(async () => {

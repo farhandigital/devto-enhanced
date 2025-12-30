@@ -41,10 +41,10 @@ export function getFeaturesForContext(context: FeatureContext): Feature[] {
 }
 
 /**
- * Feature metadata (without execute function)
+ * Feature metadata (without execute and cleanup functions)
  * Used for lightweight UI display in popup
  */
-export type FeatureMetadata = Omit<Feature, "execute">;
+export type FeatureMetadata = Omit<Feature, "execute" | "cleanup">;
 
 /**
  * Get features for UI display grouped by context
