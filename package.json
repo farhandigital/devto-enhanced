@@ -15,9 +15,11 @@
     "postinstall": "wxt prepare"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.3.10",
     "@tsconfig/svelte": "^5.0.6",
     "@wxt-dev/auto-icons": "^1.1.0",
     "@wxt-dev/module-svelte": "^2.0.4",
+    "lefthook": "^2.0.13",
     "svelte": "^5.46.0",
     "svelte-check": "^4.3.4",
     "tslib": "^2.8.1",
