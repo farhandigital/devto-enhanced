@@ -12,7 +12,7 @@ import { getFeatureDefinition } from "./feature-definitions";
 import { applyLayoutCleaning } from "./layoutCleaner";
 import { renderReadingStats } from "./readingStats";
 import { registerFeature } from "./registry";
-import { enableSmoothScroll } from "./smoothScroll";
+
 import { renderTableOfContents } from "./tocGenerator";
 
 /**
@@ -29,7 +29,6 @@ const executeMap: Record<string, (settings: ExtensionSettings) => void> = {
 	tableOfContents: renderTableOfContents,
 	copyArticleButton: renderCopyArticleButton,
 	centerArticle: handleArticleCentering,
-	smoothScroll: enableSmoothScroll,
 };
 
 // Register all features with their real execute functions
