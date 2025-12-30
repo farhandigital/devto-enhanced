@@ -1,29 +1,29 @@
 {
-  "name": "devto-enhanced",
-  "description": "Enhance your reading experience on dev.to by clearing clutters, adding Table of Content, and much more.",
-  "private": true,
-  "version": "0.2.0",
-  "type": "module",
-  "scripts": {
-    "dev": "wxt",
-    "dev:firefox": "wxt -b firefox --mv3",
-    "build": "wxt build",
-    "build:firefox": "wxt build -b firefox --mv3",
-    "zip": "wxt zip",
-    "zip:firefox": "wxt zip -b firefox --mv3",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "postinstall": "wxt prepare"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.3.10",
-    "@tsconfig/svelte": "^5.0.6",
-    "@wxt-dev/auto-icons": "^1.1.0",
-    "@wxt-dev/module-svelte": "^2.0.4",
-    "lefthook": "^2.0.13",
-    "svelte": "^5.46.0",
-    "svelte-check": "^4.3.4",
-    "tslib": "^2.8.1",
-    "typescript": "^5.9.3",
-    "wxt": "^0.20.13"
-  }
+	"name": "devto-enhanced",
+	"description": "Enhance your reading experience on dev.to by clearing clutters, adding Table of Content, and much more.",
+	"private": true,
+	"version": "0.2.0",
+	"type": "module",
+	"scripts": {
+		"dev": "wxt",
+		"dev:firefox": "wxt -b firefox --mv3",
+		"build": "wxt build",
+		"build:firefox": "wxt build -b firefox --mv3",
+		"zip": "wxt zip",
+		"zip:firefox": "wxt zip -b firefox --mv3",
+		"check": "svelte-check --tsconfig ./tsconfig.json",
+		"postinstall": "wxt prepare"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.10",
+		"@tsconfig/svelte": "^5.0.6",
+		"@wxt-dev/auto-icons": "^1.1.0",
+		"@wxt-dev/module-svelte": "^2.0.4",
+		"lefthook": "^2.0.13",
+		"svelte": "^5.46.0",
+		"svelte-check": "^4.3.4",
+		"tslib": "^2.8.1",
+		"typescript": "^5.9.3",
+		"wxt": "^0.20.13"
+	}
 }
