@@ -137,61 +137,70 @@ src/
 │   ├── content.ts       # Main content script
 │   ├── devto.css        # Injected styles
 │   └── popup/           # Extension popup UI (Svelte)
+├── features/            # Feature System
+│   ├── feature-definitions.ts # Shared feature metadata
+│   ├── index.ts         # Feature registration (with logic)
+│   ├── metadata.ts      # Feature registration (metadata only)
+│   ├── registry.ts      # Core registry logic
+│   └── ...              # Individual feature implementations
+├── types/               # TypeScript Definitions
+│   ├── feature.ts
+│   ├── settings.ts
+│   └── ...
 └── utils/               # Utility modules
-    ├── featureRegistry.ts    # Feature orchestration system
     ├── pageDetector.ts       # Page type detection
-    ├── selectors.ts          # Centralized DOM selectors
-    ├── storage.ts            # Storage management with watchers
-    ├── types.ts              # TypeScript type definitions
-    └── features/             # Individual feature implementations
-        ├── articleActionMover.ts
-        ├── articleCentering.ts
-        ├── copyArticle.ts
-        ├── layoutCleaner.ts
-        ├── readingStats.ts
-        ├── tocGenerator.ts
-        └── index.ts          # Feature registration
+    └── storage.ts            # Storage management
 ```
 
 ### Adding New Features
 
-The extension uses a declarative feature registry system. To add a new feature:
+The extension uses a declarative feature registry system with a split between metadata and implementation to optimize popup performance. To add a new feature:
 
-1. **Create the feature implementation** in `src/utils/features/yourFeature.ts`:
+1. **Define the Metadata** in `src/features/feature-definitions.ts`:
 
 ```typescript
-export function yourFeature(settings: ExtensionSettings) {
+{
+  name: "yourFeature",
+  context: ["article"], // or ["home", "global"]
+  type: "add", // or "hide"
+  settingKey: { section: "article", key: "yourFeature" },
+  label: "Your Feature Label",
+},
+```
+
+2. **Create the Implementation** in `src/features/yourFeature.ts`:
+
+```typescript
+export function handleYourFeature(settings: ExtensionSettings) {
   // Your feature logic here
 }
 ```
 
-2. **Register the feature** in `src/utils/features/index.ts`:
+3. **Register the Implementation** in `src/features/index.ts`:
 
 ```typescript
-registerFeature({
-  name: 'yourFeatureName',
-  context: ['article'], // or ['home', 'global']
-  type: 'add', // or 'hide'
-  settingKey: { section: 'article', key: 'enableYourFeature' },
-  label: 'Your Feature Label',
-  execute: yourFeature,
-});
+// Import your function
+import { handleYourFeature } from "./yourFeature";
+
+// Add to the executeMap
+const executeMap: Record<string, (settings: ExtensionSettings) => void> = {
+  // ...
+  yourFeature: handleYourFeature,
+};
 ```
 
-3. **Add the setting** to `src/utils/types.ts`:
+4. **Add the Type Definitions** in `src/types/settings.ts`:
 
 ```typescript
 export interface ExtensionSettings {
   article: {
     // ... existing settings
-    enableYourFeature: boolean;
+    yourFeature: boolean;
   };
 }
 ```
 
-4. **Add CSS** (if needed) to `src/entrypoints/devto.css`
-
-The feature will automatically appear in the popup UI and execute on the appropriate pages!
+The feature will now automatically appear in the popup (using metadata) and execute in the content script (using the implementation)!
 
 </details>
 
