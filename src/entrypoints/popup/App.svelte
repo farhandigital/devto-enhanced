@@ -18,30 +18,39 @@
     features: FeatureMetadata[];
   };
 
-  // Import feature metadata only (not the full implementations)
-  import '@/features/metadata';
+  // Lazy initialization - computed on first access
+  let toggleConfig = $state<ToggleSection[]>([]);
 
-  // Build toggle config from registered feature metadata
-  const uiFeatures = getUIFeaturesMetadata();
-  const toggleConfig: ToggleSection[] = [
-    {
-      section: 'global' as const,
-      title: 'Global',
-      features: uiFeatures.global,
-    },
-    {
-      section: 'home' as const,
-      title: 'Homepage',
-      features: uiFeatures.home,
-    },
-    {
-      section: 'article' as const,
-      title: 'Article Page',
-      features: uiFeatures.article,
-    },
-  ].filter((section) => section.features.length > 0);
+  // Initialize toggle config lazily
+  function initializeToggleConfig() {
+    // Import feature metadata only (not the full implementations)
+    // This is a dynamic import as a side-effect import to avoid module-level execution
+    import('@/features/metadata').then(() => {
+      const uiFeatures = getUIFeaturesMetadata();
+      toggleConfig = [
+        {
+          section: 'global' as const,
+          title: 'Global',
+          features: uiFeatures.global,
+        },
+        {
+          section: 'home' as const,
+          title: 'Homepage',
+          features: uiFeatures.home,
+        },
+        {
+          section: 'article' as const,
+          title: 'Article Page',
+          features: uiFeatures.article,
+        },
+      ].filter((section) => section.features.length > 0);
+    });
+  }
 
   onMount(async () => {
+    // Initialize toggle configuration
+    initializeToggleConfig();
+
     try {
       settings = await settingsStorage.getValue();
       loadError = null; // Clear error on successful load
@@ -158,10 +167,10 @@
       >
     </div>
 
-    {#each toggleConfig as { section, title, features }}
+    {#each toggleConfig as { section, title, features } (section)}
       <section>
         <h3>{title}</h3>
-        {#each features as feature}
+        {#each features as feature (feature.name)}
           {@const enabled = isFeatureEnabled(feature)}
           {@const tooltip = getDisabledTooltip(feature)}
           <div class='toggle-row' class:disabled={!enabled}>
