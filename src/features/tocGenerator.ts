@@ -139,7 +139,14 @@ function setupActiveHeadingObserver(
 				// Auto-scroll the ToC to keep the active link visible
 				// Skip auto-scroll for the first item to prevent snap-back when scrolling near the top
 				const isFirstItem = activeHeading === headings[0];
-				if (!isFirstItem) {
+
+				// Also skip if the first heading is currently visible (handles fast scrolling edge case)
+				const firstHeadingRect = headings[0].getBoundingClientRect();
+				const firstHeadingVisible =
+					firstHeadingRect.top > -100 &&
+					firstHeadingRect.top < window.innerHeight;
+
+				if (!isFirstItem && !firstHeadingVisible) {
 					activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" });
 				}
 			}
