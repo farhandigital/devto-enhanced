@@ -137,7 +137,19 @@ function setupActiveHeadingObserver(
 				activeLink.classList.add("dt-toc-active");
 
 				// Auto-scroll the ToC to keep the active link visible
-				activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" });
+				// Skip auto-scroll for the first item to prevent snap-back when scrolling near the top
+				const isFirstItem = activeHeading === headings[0];
+
+				// Also skip if the first heading is currently visible (handles fast scrolling edge case)
+				const firstHeadingRect = headings[0].getBoundingClientRect();
+				const firstHeadingVisible =
+					// -100 for a big enough margin that's more forgiving for fast scrolling
+					firstHeadingRect.top > -100 &&
+					firstHeadingRect.top < window.innerHeight;
+
+				if (!isFirstItem && !firstHeadingVisible) {
+					activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" });
+				}
 			}
 		}
 	};
