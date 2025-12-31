@@ -23,7 +23,6 @@ All features are **fully toggleable** via the extension popup menu, with prefere
 - **Sticky Table of Contents** — Auto-generate a dynamic, scrollspy-enabled table of contents in the right sidebar that:
   - Includes all headings (H1-H6) from the article
   - Highlights the currently active section as you scroll
-  - Provides smooth scroll navigation to any section
   - Automatically generates IDs for headings without them
 - **Reading Statistics** — Display word count and estimated reading time (based on 225 WPM) below the article title
 - **Copy Article Button** — One-click button to copy the entire article in Markdown format, including:
@@ -131,25 +130,36 @@ bun run zip:firefox   # Firefox
 ```bash
 src/
 ├── assets/              # Static assets (icons, images)
+│   └── icon.png         # Extension icon
 ├── config/              # Configuration files
-│   └── hideableElements.ts  # Declarative configuration for hideable elements
+│   ├── hideableElements.ts  # Declarative configuration for hideable elements
+│   └── selectors.ts     # DOM selector constants
 ├── entrypoints/         # Extension entry points
 │   ├── content.ts       # Main content script
 │   ├── devto.css        # Injected styles
 │   └── popup/           # Extension popup UI (Svelte)
+│       ├── App.svelte   # Main popup component
+│       ├── app.css      # Popup styles
+│       ├── index.html   # Popup HTML entry
+│       └── main.ts      # Popup initialization
 ├── features/            # Feature System
-│   ├── feature-definitions.ts # Shared feature metadata
-│   ├── index.ts         # Feature registration (with logic)
-│   ├── metadata.ts      # Feature registration (dupe for popup perf)
+│   ├── feature-definitions.ts # Shared feature metadata (content script)
+│   ├── metadata.ts      # Feature metadata (popup - duplicated for perf)
+│   ├── index.ts         # Feature registration with implementations
 │   ├── registry.ts      # Core registry logic
-│   └── ...              # Individual feature implementations
+│   ├── articleActionMover.ts   # Move engagement buttons feature
+│   ├── articleCentering.ts     # Center article content feature
+│   ├── copyArticle.ts          # Copy article as Markdown feature
+│   ├── layoutCleaner.ts        # Hide sidebars/elements feature
+│   ├── readingStats.ts         # Reading time/word count feature
+│   └── tocGenerator.ts         # Table of contents feature
 ├── types/               # TypeScript Definitions
-│   ├── feature.ts
-│   ├── settings.ts
-│   └── ...
+│   ├── feature.ts       # Feature type definitions
+│   ├── hideable.ts      # Hideable element type definitions
+│   └── settings.ts      # Settings type definitions
 └── utils/               # Utility modules
-    ├── pageDetector.ts       # Page type detection
-    └── storage.ts            # Storage management
+    ├── pageDetector.ts  # Page type detection
+    └── storage.ts       # Storage management
 ```
 
 ### Adding New Features
@@ -215,26 +225,58 @@ The feature will now automatically appear in the popup (using metadata) and exec
 
 ### Feature Registry System
 
-The extension uses a centralized feature registry that enables:
+The extension uses a centralized feature registry with a performance-optimized split architecture:
 
-- **Declarative feature definitions** — Register features with metadata (name, context, type, settings)
+- **Declarative feature definitions** — Features are defined with metadata (name, context, type, settings) in two locations:
+  - `feature-definitions.ts` — Used by the content script for feature execution
+  - `metadata.ts` — Duplicate metadata used exclusively by the popup for instant UI rendering
 - **Automatic orchestration** — Features are executed based on page context without manual coordination
-- **Type-safe settings** — Full TypeScript support for all feature configurations
-- **Dynamic UI generation** — Popup interface is automatically generated from registered features
+- **Type-safe settings** — Full TypeScript support for all feature configurations via `types/settings.ts`
+- **Dynamic UI generation** — Popup interface is automatically generated from registered features in `metadata.ts`
+
+### Performance-Optimized Bundle Splitting
+
+To ensure the popup opens **instantly** (<50ms), the codebase maintains a strict separation:
+
+- **Popup Bundle** (`entrypoints/popup/`)
+  - Only imports `features/metadata.ts` (lightweight metadata definitions)
+  - Never imports feature implementations or heavy dependencies
+  - Renders UI and manages toggle states via browser storage
+  
+- **Content Script Bundle** (`entrypoints/content.ts`)
+  - Imports `features/index.ts` (full feature registry with implementations)
+  - Executes feature logic based on page context and user settings
+  - Monitors DOM changes and handles SPA navigation
+
+**Trade-off**: Feature metadata is manually duplicated between `feature-definitions.ts` and `metadata.ts` to maintain this performance boundary. This intentional coupling prevents the popup from importing any feature implementation code.
 
 ### Context-Aware Execution
 
 Features are registered with specific contexts:
 
 - **Global** — Execute on all dev.to pages
-- **Article** — Execute only on article pages
-- **Home** — Execute only on the homepage
+- **Article** — Execute only on article pages (`/*/`)
+- **Home** — Execute only on the homepage (`/`)
+
+The `pageDetector.ts` utility determines the current page type, and the registry executes only relevant features.
+
+### Feature Types
+
+Features are categorized by their implementation approach:
+
+- **`hide` type** — CSS-based layout modifications (toggle body classes)
+  - Examples: Hide sidebars, hide subforem switcher
+  - Implemented via `layoutCleaner.ts` using `hideableElements.ts` config
+  
+- **`add` type** — DOM injection and dynamic UI enhancements
+  - Examples: Table of contents, reading stats, copy article button
+  - Each feature has its own implementation file (e.g., `tocGenerator.ts`)
 
 ### Mutation Observer with Smart Filtering
 
-The content script uses a MutationObserver to detect SPA navigation, but includes intelligent filtering to:
+The content script uses a MutationObserver to detect SPA navigation, with intelligent filtering to:
 
-- Ignore mutations from the extension's own injected elements
+- Ignore mutations from the extension's own injected elements (via `data-devto-enhanced` attributes)
 - Only react to significant DOM changes (page transitions)
 - Prevent infinite loops from self-triggered mutations
 - Skip irrelevant changes (ads, lazy-loaded content)
@@ -246,6 +288,7 @@ Layout modifications (hiding sidebars, centering content) are implemented primar
 - **Better performance** — No DOM manipulation for simple visibility changes
 - **Smooth transitions** — CSS animations for better UX
 - **Maintainability** — Centralized styles in `devto.css`
+- **Declarative configuration** — Hideable elements defined in `config/hideableElements.ts`
 
 </details>
 
