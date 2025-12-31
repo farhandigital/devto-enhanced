@@ -143,6 +143,7 @@ function setupActiveHeadingObserver(
 				// Also skip if the first heading is currently visible (handles fast scrolling edge case)
 				const firstHeadingRect = headings[0].getBoundingClientRect();
 				const firstHeadingVisible =
+					// -100 for a big enough margin that's more forgiving for fast scrolling
 					firstHeadingRect.top > -100 &&
 					firstHeadingRect.top < window.innerHeight;
 
