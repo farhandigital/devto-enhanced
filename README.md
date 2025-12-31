@@ -15,13 +15,12 @@ All features are **fully toggleable** via the extension popup menu.
 ### 🧹 Decluttering
 - **Global** — Hide the Subforem switcher for a cleaner interface.
 - **Homepage** — Remove left and right sidebars to focus on the feed.
+- **Article** — Remove sidebars, center the content, and relocate engagement buttons.
 
 ### 📖 Article Enhancements
 - **Sticky Table of Contents** — Auto-generated, scrollspy-enabled ToC for easy navigation.
 - **Reading Statistics** — Display word count and estimated reading time.
 - **Copy Article** — One-click copy to Markdown with full formatting preservation.
-- **Focus Mode** — Remove sidebars and center the article content.
-- **Efficient Layout** — Relocated engagement buttons for better accessibility.
 
 *For a detailed breakdown of every feature's capabilities, see [docs/FEATURES.md](docs/FEATURES.md).*
 
