@@ -24,7 +24,46 @@ All features are **fully toggleable** via the extension popup menu.
 
 *For a detailed breakdown of every feature's capabilities, see [docs/FEATURES.md](docs/FEATURES.md).*
 
-## 🛠️ Quick Start
+### 📥 Installation
+
+#### Mozilla Firefox
+
+[![Firefox Add-on](https://img.shields.io/badge/Firefox-Available-orange?logo=firefox)](https://addons.mozilla.org/en-US/firefox/addon/devto-enhanced/)
+
+Install directly from [Firefox Add-ons (AMO)](https://addons.mozilla.org/en-US/firefox/addon/devto-enhanced/)
+
+#### Google Chrome/Edge
+
+> [!IMPORTANT]
+> Not yet available on official extension stores. Use the manual installation steps below.
+
+<details>
+<summary>Click for manual installation instructions</summary>
+
+### Download from GitHub Releases
+
+#### For Google Chrome/Edge:
+
+1. Download the latest Chrome extension package from [GitHub Releases](https://github.com/InvictusNavarchus/udemy-show-release-date/releases/latest)
+2. Extract the downloaded ZIP file to a folder on your computer.
+3. Open Chrome/Edge and navigate to `chrome://extensions/`.
+4. Enable **Developer mode** (toggle in the top right).
+5. Click on **Load unpacked**.
+6. Select the extracted folder containing the extension files.
+
+#### For Mozilla Firefox:
+
+1. Download the latest Firefox extension package from [GitHub Releases](https://github.com/InvictusNavarchus/udemy-show-release-date/releases/latest)
+2. Extract the downloaded ZIP file to a folder on your computer.
+3. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`.
+4. Click on **Load Temporary Add-on...**.
+5. Select the `manifest.json` file located inside the extracted folder.
+
+The extension icon should now appear in your browser's toolbar.
+
+</details>
+
+## 🛠️ Quick Dev
 
 **Prerequisites**: [Bun](https://bun.sh) and a Chromium or Firefox browser.
 
