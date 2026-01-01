@@ -14,23 +14,24 @@ html.dt-smooth-scroll-enabled {
 /* --- Global Settings --- */
 
 /* Hide Subforem Switcher */
-body.dt-hide-subforem #main-side-bar > * {
+body.dt-hide-subforem #main-side-bar>* {
   display: none !important;
 }
 
 /* --- Layout Cleaning Classes --- */
 
 /* Hide Left Sidebar - Hide content inside sidebars, not the sidebars themselves */
-body.dt-clean-left #sidebar-wrapper-left > * {
+body.dt-clean-left #sidebar-wrapper-left>* {
   display: none !important;
 }
 
 /* Hide Right Sidebar - Hide original content inside sidebar, not the sidebar itself */
 body.dt-clean-right .crayons-layout__sidebar-right {
-  min-width: 320px; /* Maintain sidebar width to match Dev.to's default */
+  min-width: 320px;
+  /* Maintain sidebar width to match Dev.to's default */
 }
 
-body.dt-clean-right .crayons-layout__sidebar-right > *:not(.dt-toc-container) {
+body.dt-clean-right .crayons-layout__sidebar-right>*:not(.dt-toc-container) {
   display: none !important;
 }
 
@@ -102,12 +103,29 @@ body.dark-theme .dt-toc-link.dt-toc-active {
 }
 
 /* Nesting levels */
-.dt-toc-level-1 { margin-left: 0; }
-.dt-toc-level-2 { margin-left: 0.5rem; }
-.dt-toc-level-3 { margin-left: 1rem; }
-.dt-toc-level-4 { margin-left: 1.5rem; }
-.dt-toc-level-5 { margin-left: 2rem; }
-.dt-toc-level-6 { margin-left: 2.5rem; }
+.dt-toc-level-1 {
+  margin-left: 0;
+}
+
+.dt-toc-level-2 {
+  margin-left: 0.5rem;
+}
+
+.dt-toc-level-3 {
+  margin-left: 1rem;
+}
+
+.dt-toc-level-4 {
+  margin-left: 1.5rem;
+}
+
+.dt-toc-level-5 {
+  margin-left: 2rem;
+}
+
+.dt-toc-level-6 {
+  margin-left: 2.5rem;
+}
 
 /* --- Reading Stats --- */
 .dt-reading-stats {
@@ -178,6 +196,21 @@ body.dark-theme .dt-stat-badge {
 .dt-engagement-moved .crayons-tooltip__content {
   white-space: nowrap !important;
   display: block !important;
+}
+
+/* Fix reaction drawer positioning when moved */
+.dt-engagement-moved .reaction-drawer__outer {
+  position: relative !important;
+}
+
+.dt-engagement-moved .reaction-drawer {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translateY(0.5rem) !important;
+  z-index: 500 !important;
 }
 
 /* Dark mode support for moved engagement buttons */
@@ -253,21 +286,27 @@ body.dark-theme .dt-engagement-moved .crayons-reaction__count {
   0% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.05);
   }
+
   100% {
     transform: scale(1);
   }
 }
 
 @keyframes dt-copy-shake {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(0);
   }
+
   25% {
     transform: translateX(-5px);
   }
+
   75% {
     transform: translateX(5px);
   }
