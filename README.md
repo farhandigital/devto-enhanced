@@ -24,16 +24,6 @@ All features are **fully toggleable** via the extension popup menu.
 
 *For a detailed breakdown of every feature's capabilities, see [docs/FEATURES.md](docs/FEATURES.md).*
 
-## 🏗️ Architecture Overview
-
-The extension is built with performance as a priority, utilizing a **Split Architecture**:
-
-1.  **Instant Popup**: The popup bundle imports *only* feature metadata, ensuring it opens in <50ms.
-2.  **Context-Aware Content Script**: The content script handles the heavy lifting, orchestrating features based on the current page type (Home vs Article).
-3.  **Feature Registry**: A declarative system where features are defined once and automatically injected where needed.
-
-*See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for a deep dive into the bundle splitting strategy and registry system.*
-
 ## 🛠️ Quick Start
 
 **Prerequisites**: [Bun](https://bun.sh) and a Chromium or Firefox browser.
