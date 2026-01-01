@@ -36,7 +36,7 @@ export default defineContentScript({
 			}
 		});
 
-		// 3. Handle Dev.to SPA navigation (InstantClick/Turbo)
+		// 3. Handle dev.to SPA navigation (InstantClick/Turbo)
 		state.observer = new MutationObserver((mutations) => {
 			// Filter out mutations from our injected elements to prevent infinite loops
 			const relevantMutations = mutations.filter((mutation) => {

@@ -1,5 +1,5 @@
 /**
- * Centralized Dev.to DOM selectors
+ * Centralized dev.to DOM selectors
  * Single source of truth for all CSS selectors used in the extension
  */
 

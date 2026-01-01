@@ -1,6 +1,6 @@
-# DEV.TO Enhanced
+# dev.to Enhanced
 
-[![Version](https://img.shields.io/badge/version-0.2.0-orange)](https://github.com/InvictusNavarchus/devto-enhanced)
+[![Version](https://img.shields.io/badge/version-0.3.0-orange)](https://github.com/InvictusNavarchus/devto-enhanced)
 [![License](https://img.shields.io/badge/license-MPL--2.0-green)](https://mozilla.org/MPL/2.0/)
 [![Built with WXT](https://img.shields.io/badge/built%20with-WXT-7c3aed)](https://wxt.dev/)
 

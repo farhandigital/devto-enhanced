@@ -147,8 +147,8 @@
 
 <main>
   <div class="header">
-    <img src={iconUrl} alt="Dev.to Enhancer" class="logo" />
-    <h2>Dev.to Enhancer</h2>
+    <img src={iconUrl} alt="dev.to Enhanced" class="logo" />
+    <h2>dev.to Enhanced</h2>
   </div>
 
   {#if loadError}
