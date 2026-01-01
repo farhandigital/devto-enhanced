@@ -101,3 +101,24 @@ registerFeature({
 	label: "Center Article",
 	execute: () => {},
 });
+
+// Register hide right sidebar (post editor)
+registerFeature({
+	name: "hideRightSidebarEditor",
+	context: ["postEditor"],
+	type: "hide",
+	settingKey: { section: "postEditor", key: "hideRightSidebar" },
+	label: "Hide Right Sidebar",
+	execute: () => {},
+});
+
+// Register editor centering (post editor-only feature)
+// Only activates when right sidebar is hidden
+registerFeature({
+	name: "centerEditor",
+	context: ["postEditor"],
+	type: "add",
+	settingKey: { section: "postEditor", key: "centerEditor" },
+	label: "Center Editor",
+	execute: () => {},
+});

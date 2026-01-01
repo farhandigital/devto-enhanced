@@ -70,6 +70,7 @@ export function getUIFeaturesMetadata(): {
 	global: FeatureMetadata[];
 	home: FeatureMetadata[];
 	article: FeatureMetadata[];
+	postEditor: FeatureMetadata[];
 } {
 	const toMetadata = (f: Feature): FeatureMetadata => ({
 		name: f.name,
@@ -93,6 +94,12 @@ export function getUIFeaturesMetadata(): {
 				(f) => f.context.includes("article") && !f.context.includes("global"),
 			)
 			.map(toMetadata),
+		postEditor: features
+			.filter(
+				(f) =>
+					f.context.includes("postEditor") && !f.context.includes("global"),
+			)
+			.map(toMetadata),
 	};
 }
 
@@ -100,7 +107,7 @@ export function getUIFeaturesMetadata(): {
  * Execute all features for the current page context
  */
 export function executeFeatures(
-	pageType: "article" | "home" | "other",
+	pageType: "article" | "home" | "postEditor" | "other",
 	settings: ExtensionSettings,
 ): void {
 	// Execute global features first

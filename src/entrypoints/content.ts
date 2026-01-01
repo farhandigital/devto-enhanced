@@ -6,9 +6,13 @@ import { PageDetector } from "@/utils/pageDetector";
 import { settingsStorage } from "@/utils/storage";
 import "./devto.css";
 
-function getFeatureContext(): "article" | "home" | "other" {
+function getFeatureContext(): "article" | "home" | "postEditor" | "other" {
 	const pageType = PageDetector.getPageType();
-	return pageType === "article" || pageType === "home" ? pageType : "other";
+	return pageType === "article" ||
+		pageType === "home" ||
+		pageType === "postEditor"
+		? pageType
+		: "other";
 }
 
 const state = {

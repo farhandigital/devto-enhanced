@@ -36,11 +36,30 @@ export const PageDetector = {
 	},
 
 	/**
+	 * Check if current page is the post editor (new or edit)
+	 */
+	isPostEditor(): boolean {
+		const pageContent = document.querySelector("#page-content");
+		return (
+			(pageContent?.classList.contains("articles-new") ||
+				pageContent?.classList.contains("articles-edit")) ??
+			false
+		);
+	},
+
+	/**
 	 * Get the current page type
 	 */
-	getPageType(): "article" | "home" | "profile" | "tag" | "other" {
+	getPageType():
+		| "article"
+		| "home"
+		| "profile"
+		| "tag"
+		| "postEditor"
+		| "other" {
 		if (this.isArticle()) return "article";
 		if (this.isHome()) return "home";
+		if (this.isPostEditor()) return "postEditor";
 		if (this.isProfile()) return "profile";
 		if (this.isTag()) return "tag";
 		return "other";

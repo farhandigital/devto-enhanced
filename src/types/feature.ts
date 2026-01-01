@@ -8,7 +8,12 @@ import type { ExtensionSettings } from "./settings";
 /**
  * Feature context type - where a feature should run
  */
-export type FeatureContext = "global" | "article" | "home" | "other";
+export type FeatureContext =
+	| "global"
+	| "article"
+	| "home"
+	| "postEditor"
+	| "other";
 
 /**
  * Feature type - whether it hides UI elements or adds functionality

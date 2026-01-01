@@ -44,6 +44,11 @@
             title: "Article Page",
             features: uiFeatures.article,
           },
+          {
+            section: "postEditor" as const,
+            title: "Post Editor",
+            features: uiFeatures.postEditor,
+          },
         ].filter((section) => section.features.length > 0);
       })
       .catch((error) => {
@@ -123,6 +128,13 @@
     ) {
       return settings.article.hideRightSidebar && !settings.article.showToC;
     }
+    // Special case: centerEditor requires right sidebar hidden
+    if (
+      feature.settingKey.section === "postEditor" &&
+      feature.settingKey.key === "centerEditor"
+    ) {
+      return settings.postEditor.hideRightSidebar;
+    }
     return true; // All other features are always enabled
   }
 
@@ -139,6 +151,14 @@
       }
       if (settings.article.showToC) {
         return "Requires: ToC disabled";
+      }
+    }
+    if (
+      feature.settingKey.section === "postEditor" &&
+      feature.settingKey.key === "centerEditor"
+    ) {
+      if (!settings.postEditor.hideRightSidebar) {
+        return "Requires: Right Sidebar hidden";
       }
     }
     return null;

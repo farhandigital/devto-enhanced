@@ -355,3 +355,35 @@ body.dt-center-article .crayons-layout {
   grid-template-columns: auto 1fr;
   justify-items: center;
 }
+
+/* --- Post Editor --- */
+
+/* Hide Right Sidebar in Post Editor */
+body.dt-clean-editor-right .crayons-article-form__aside {
+  display: none !important;
+}
+
+/* Center Editor Content */
+body.dt-center-editor .crayons-article-form__content {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+/* Adjust form layout when centered */
+body.dt-center-editor .crayons-article-form {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  justify-items: center;
+}
+
+/* Ensure header stays full-width */
+body.dt-center-editor .crayons-article-form__header {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+/* Ensure footer stays full-width */
+body.dt-center-editor .crayons-article-form__footer {
+  grid-column: 1 / -1;
+  width: 100%;
+}

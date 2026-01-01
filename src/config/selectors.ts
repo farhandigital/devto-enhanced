@@ -46,4 +46,9 @@ export const Selectors = {
 	tag: {
 		tagData: "[data-tag]",
 	},
+
+	// Post Editor
+	postEditor: {
+		rightSidebar: ".crayons-article-form__aside",
+	},
 } as const;

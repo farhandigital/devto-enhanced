@@ -93,6 +93,20 @@ export const featureDefinitions: readonly FeatureDefinition[] = [
 		settingKey: { section: "article", key: "centerArticle" },
 		label: "Center Article",
 	},
+	{
+		name: "hideRightSidebarEditor",
+		context: ["postEditor"],
+		type: "hide",
+		settingKey: { section: "postEditor", key: "hideRightSidebar" },
+		label: "Hide Right Sidebar",
+	},
+	{
+		name: "centerEditor",
+		context: ["postEditor"],
+		type: "add",
+		settingKey: { section: "postEditor", key: "centerEditor" },
+		label: "Center Editor",
+	},
 ] as const;
 
 /**

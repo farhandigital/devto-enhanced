@@ -22,6 +22,11 @@ export interface ExtensionSettings {
 		hideLeftSidebar: boolean;
 		hideRightSidebar: boolean;
 	};
+	// Post Editor Features
+	postEditor: {
+		hideRightSidebar: boolean;
+		centerEditor: boolean;
+	};
 }
 
 export const DEFAULT_SETTINGS: ExtensionSettings = {
@@ -39,5 +44,9 @@ export const DEFAULT_SETTINGS: ExtensionSettings = {
 	home: {
 		hideLeftSidebar: true,
 		hideRightSidebar: true,
+	},
+	postEditor: {
+		hideRightSidebar: true,
+		centerEditor: false,
 	},
 };

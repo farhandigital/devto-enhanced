@@ -8,6 +8,7 @@ import type { ExtensionSettings } from "@/types/settings";
 import { handleEngagementButtons } from "./articleActionMover";
 import { handleArticleCentering } from "./articleCentering";
 import { renderCopyArticleButton } from "./copyArticle";
+import { handleEditorCentering } from "./editorCentering";
 import { getFeatureDefinition } from "./feature-definitions";
 import { applyLayoutCleaning } from "./layoutCleaner";
 import { renderReadingStats } from "./readingStats";
@@ -29,6 +30,8 @@ const executeMap: Record<string, (settings: ExtensionSettings) => void> = {
 	tableOfContents: renderTableOfContents,
 	copyArticleButton: renderCopyArticleButton,
 	centerArticle: handleArticleCentering,
+	hideRightSidebarEditor: applyLayoutCleaning,
+	centerEditor: handleEditorCentering,
 };
 
 // Register all features with their real execute functions

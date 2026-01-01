@@ -39,6 +39,14 @@ export const HIDEABLE_ELEMENTS: readonly HideableElement[] = [
 		cssClass: "dt-clean-right",
 		context: "home",
 	},
+
+	// Post Editor elements
+	{
+		selector: Selectors.postEditor.rightSidebar,
+		settingPath: "postEditor.hideRightSidebar",
+		cssClass: "dt-clean-editor-right",
+		context: "postEditor",
+	},
 ] as const;
 
 /**
