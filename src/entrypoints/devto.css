@@ -28,7 +28,7 @@ body.dt-clean-left #sidebar-wrapper-left>* {
 /* Hide Right Sidebar - Hide original content inside sidebar, not the sidebar itself */
 body.dt-clean-right .crayons-layout__sidebar-right {
   min-width: 320px;
-  /* Maintain sidebar width to match Dev.to's default */
+  /* Maintain sidebar width to match dev.to's default */
 }
 
 body.dt-clean-right .crayons-layout__sidebar-right>*:not(.dt-toc-container) {
