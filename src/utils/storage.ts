@@ -1,5 +1,5 @@
 import { storage } from "#imports";
-import { DEFAULT_SETTINGS, type ExtensionSettings } from "@/types/settings";
+import { DEFAULT_SETTINGS, type ExtensionSettings } from "@/types";
 
 export const settingsStorage = storage.defineItem<ExtensionSettings>(
 	"local:settings",
