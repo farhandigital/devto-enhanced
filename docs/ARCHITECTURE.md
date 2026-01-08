@@ -45,7 +45,7 @@ The codebase is organized by **domain/context** rather than technical layer:
 Features are broadly categorized by how they interact with the page:
 
 *   **`hide` type**: Purely presentational features that toggle CSS classes on the `<body>`.
-    *   *Implementation*: Defines a `cssClass` property. The registry automatically toggles this class based on the setting.
+    *   *Implementation*: Defines an `execute()` function that toggles a CSS class based on the setting. The `cssClass` property serves as metadata/documentation.
     *   *Example*: Hiding the right sidebar.
 
 *   **`add` type**: Functional features that manipulate the DOM or add new elements.
