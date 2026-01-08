@@ -1,68 +1,60 @@
 # Architecture
 
-## Feature Registry System
+## Modular Feature System
 
-The extension uses a centralized feature registry with a performance-optimized split architecture:
+The extension uses a **modular, self-contained architecture** designed for loose coupling and high cohesion. Each feature is an independent module that defines its own behavior, settings, and UI metadata.
 
-- **Declarative feature definitions** — Features are defined with metadata (name, context, type, settings) in two locations:
-  - `feature-definitions.ts` — Used by the content script for feature execution
-  - `metadata.ts` — Duplicate metadata used exclusively by the popup for instant UI rendering
-- **Automatic orchestration** — Features are executed based on page context without manual coordination
-- **Type-safe settings** — Full TypeScript support for all feature configurations via `types/settings.ts`
-- **Dynamic UI generation** — Popup interface is automatically generated from registered features in `metadata.ts`
+### Core Principles
 
-## Performance-Optimized Bundle Splitting
+1.  **Self-Contained Modules**: Every feature resides in its own file (e.g., `features/definitions/article/centerArticle.ts`) and contains everything it needs:
+    *   Metadata (name, label, context)
+    *   Execution logic (`execute`)
+    *   Cleanup logic (`cleanup`)
+    *   Enable/Disable conditions (`isEnabled`)
+    *   UI configuration (`disabledTooltip`)
 
-To ensure the popup opens **instantly** (<50ms), the codebase maintains a strict separation:
+2.  **Dynamic Registration**: Features register themselves automatically upon import. The `src/features/core/registry.ts` module manages the consolidated list of active features.
 
-- **Popup Bundle** (`entrypoints/popup/`)
-  - Only imports `features/metadata.ts` (lightweight metadata definitions)
-  - Never imports feature implementations or heavy dependencies
-  - Renders UI and manages toggle states via browser storage
-  
-- **Content Script Bundle** (`entrypoints/content.ts`)
-  - Imports `features/index.ts` (full feature registry with implementations)
-  - Executes feature logic based on page context and user settings
-  - Monitors DOM changes and handles SPA navigation
+3.  **Single Source of Truth**:
+    *   **Types**: All core types are consolidated in `src/types/index.ts`.
+    *   **Features**: Feature behavior and metadata are defined in *one place* (the feature file), eliminating the need to sync multiple configuration files.
 
-**Trade-off**: Feature metadata is manually duplicated between `feature-definitions.ts` and `metadata.ts` to maintain this performance boundary. This intentional coupling prevents the popup from importing any feature implementation code.
+4.  **Automatic UI Generation**: The popup UI is dynamically generated from the registered features. There is no hardcoded UI markup for feature toggles. Grouping and ordering are handled automatically by the registry.
 
-## Context-Aware Execution
+## Directory Structure Strategy
 
-Features are registered with specific contexts:
+The codebase is organized by **domain/context** rather than technical layer:
 
-- **Global** — Execute on all dev.to pages
-- **Article** — Execute only on article pages (`/*/`)
-- **Home** — Execute only on the homepage (`/`)
+*   `src/features/definitions/global/` - Features that apply to the entire site.
+*   `src/features/definitions/home/` - Features specific to the homepage.
+*   `src/features/definitions/article/` - Features specific to article pages.
+*   `src/features/core/` - The engine that powers feature registration and execution.
 
-The `pageDetector.ts` utility determines the current page type, and the registry executes only relevant features.
+## Execution Flow
+
+1.  **Initialization**: The content script (`entrypoints/content.ts`) imports the feature definitions barrel file (`features/definitions/index.ts`), triggering the self-registration process.
+2.  **Context Detection**: The `PageDetector` utility identifies the current page type (e.g., `article`, `home`).
+3.  **Feature selection**: The registry filters features based on the current page context.
+4.  **Execution**: The registry executes the `execute()` method of relevant features, passing in the user's settings.
+5.  **Reactivity**:
+    *   **Settings Changes**: When settings change, the feature re-runs or toggles its state.
+    *   **Navigation**: A smart `MutationObserver` detects SPA navigation (Turbo/InstantClick) and re-evaluates the context and active features.
 
 ## Feature Types
 
-Features are categorized by their implementation approach:
+Features are broadly categorized by how they interact with the page:
 
-- **`hide` type** — CSS-based layout modifications (toggle body classes)
-  - Examples: Hide sidebars, hide subforem switcher
-  - Implemented via `layoutCleaner.ts` using `hideableElements.ts` config
-  
-- **`add` type** — DOM injection and dynamic UI enhancements
-  - Examples: Table of contents, reading stats, copy article button
-  - Each feature has its own implementation file (e.g., `tocGenerator.ts`)
+*   **`hide` type**: Purely presentational features that toggle CSS classes on the `<body>`.
+    *   *Implementation*: Defines a `cssClass` property. The registry automatically toggles this class based on the setting.
+    *   *Example*: Hiding the right sidebar.
 
-## Mutation Observer with Smart Filtering
+*   **`add` type**: Functional features that manipulate the DOM or add new elements.
+    *   *Implementation*: Defines an `execute()` function to run logic (and optionally a `cleanup()` function to reverse it).
+    *   *Example*: Generating a table of contents or adding a reading time estimate.
 
-The content script uses a MutationObserver to detect SPA navigation, with intelligent filtering to:
+## Mutation Observer Strategy
 
-- Ignore mutations from the extension's own injected elements (via `data-devto-enhanced` attributes)
-- Only react to significant DOM changes (page transitions)
-- Prevent infinite loops from self-triggered mutations
-- Skip irrelevant changes (ads, lazy-loaded content)
+The extension relies on a `MutationObserver` to handle Dev.to's client-side navigation (SPA behavior). To maintain performance:
 
-## CSS-First Approach for Layout Changes
-
-Layout modifications (hiding sidebars, centering content) are implemented primarily through CSS classes toggled on the `<body>` element. This provides:
-
-- **Better performance** — No DOM manipulation for simple visibility changes
-- **Smooth transitions** — CSS animations for better UX
-- **Maintainability** — Centralized styles in `devto.css`
-- **Declarative configuration** — Hideable elements defined in `config/hideableElements.ts`
+*   **Smart Filtering**: execution is only triggered by "significant" DOM changes (e.g., main content replacement).
+*   **Self-Correction**: Mutations triggered by the extension itself (e.g., injecting the TOC) are ignored to prevent infinite loops.
