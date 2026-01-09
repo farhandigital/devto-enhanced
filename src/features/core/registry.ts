@@ -13,6 +13,7 @@ import type {
 	FeatureMetadata,
 	PageContext,
 } from "@/types";
+import { ORDERED_CONTEXTS, UI_CONTEXT_TITLES } from "@/types";
 
 /**
  * Internal registry storage
@@ -71,12 +72,6 @@ function toMetadata(feature: FeatureDefinition): FeatureMetadata {
  * Returns only metadata without execute functions for lightweight popup use
  */
 export function getUIFeatureGroups(): FeatureGroup[] {
-	const contextTitles: Record<FeatureGroupContext, string> = {
-		global: "Global",
-		home: "Homepage",
-		article: "Article Page",
-	};
-
 	// Get all unique contexts from registered features (excluding "other")
 	const contexts = new Set<FeatureGroupContext>();
 	for (const feature of features) {
@@ -90,10 +85,7 @@ export function getUIFeatureGroups(): FeatureGroup[] {
 	// Build groups dynamically
 	const groups: FeatureGroup[] = [];
 
-	// Process in a consistent order: global first, then alphabetical
-	const orderedContexts: FeatureGroupContext[] = ["global", "home", "article"];
-
-	for (const context of orderedContexts) {
+	for (const context of ORDERED_CONTEXTS) {
 		if (!contexts.has(context)) continue;
 
 		const contextFeatures = features.filter((f) => {
@@ -108,7 +100,7 @@ export function getUIFeatureGroups(): FeatureGroup[] {
 		if (contextFeatures.length > 0) {
 			groups.push({
 				context,
-				title: contextTitles[context] || context,
+				title: UI_CONTEXT_TITLES[context],
 				features: contextFeatures.map(toMetadata),
 			});
 		}

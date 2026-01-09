@@ -165,3 +165,18 @@ export const UI_CONTEXT_TITLES: Record<FeatureGroupContext, string> = {
 	home: "Homepage",
 	article: "Article Page",
 };
+
+/**
+ * Ordered contexts for consistent UI display
+ * If you add a new context to PageContext, you must also add it here.
+ *
+ * Type safety: The assertion below ensures all FeatureGroupContext values are included.
+ * If any context is missing, TypeScript will error.
+ */
+export const ORDERED_CONTEXTS = ["global", "home", "article"] as const;
+
+// Compile-time check: Ensure ORDERED_CONTEXTS contains all FeatureGroupContext values
+// If a context is added to PageContext but not here, this line will fail to compile
+const _assertComplete: FeatureGroupContext extends (typeof ORDERED_CONTEXTS)[number]
+	? true
+	: "ERROR: ORDERED_CONTEXTS is missing some FeatureGroupContext values" = true;
