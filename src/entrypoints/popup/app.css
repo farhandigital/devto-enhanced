@@ -55,6 +55,12 @@ h3 {
   letter-spacing: 0.05em;
 }
 
+.loading-state {
+  text-align: center;
+  padding: 2rem;
+  color: #575757;
+}
+
 .toggle-row {
   display: flex;
   justify-content: space-between;

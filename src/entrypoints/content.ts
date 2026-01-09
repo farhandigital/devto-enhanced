@@ -1,12 +1,19 @@
-import "@/features"; // Register all features
+/**
+ * Content Script Entry Point
+ *
+ * Main entry point for the extension's content script.
+ * Handles feature initialization and SPA navigation detection.
+ */
+
+import "@/features/definitions"; // Register all features
 import { Selectors } from "@/config/selectors";
-import { executeFeatures } from "@/features/registry";
-import type { ExtensionSettings } from "@/types/settings";
+import { executeFeatures } from "@/features/core/registry";
+import type { ExtensionSettings, PageContext } from "@/types";
 import { PageDetector } from "@/utils/pageDetector";
 import { settingsStorage } from "@/utils/storage";
 import "./devto.css";
 
-function getFeatureContext(): "article" | "home" | "other" {
+function getFeatureContext(): PageContext {
 	const pageType = PageDetector.getPageType();
 	return pageType === "article" || pageType === "home" ? pageType : "other";
 }
@@ -20,7 +27,7 @@ export default defineContentScript({
 	matches: ["https://dev.to/*"],
 	cssInjectionMode: "manifest",
 
-	async main(ctx) {
+	async main(_ctx) {
 		if (state.initialized) return;
 		state.initialized = true;
 
@@ -59,11 +66,9 @@ export default defineContentScript({
 			}
 
 			// Only apply layout cleaning for significant mutations (page transitions)
-			// Skip mutations from lazy-loaded content, ads, or irrelevant elements
 			const significantMutation = relevantMutations.some((mutation) => {
 				// Check for page structure changes (main content replacements)
 				if (mutation.type === "childList") {
-					// Look for changes to article content or stories index (main page structure)
 					const target = mutation.target as Element;
 					const isMainContent =
 						target.matches(Selectors.mainContent) ||
@@ -72,7 +77,7 @@ export default defineContentScript({
 					if (isMainContent) return true;
 				}
 
-				// Check for body class changes, but IGNORE our own dt-* classes to prevent infinite loop
+				// Check for body class changes, but IGNORE our own dt-* classes
 				if (
 					mutation.type === "attributes" &&
 					mutation.target === document.body
@@ -80,11 +85,9 @@ export default defineContentScript({
 					const oldValue = mutation.oldValue || "";
 					const newValue = (mutation.target as HTMLElement).className;
 
-					// Check if the change is only our dt-* classes (dt-clean-left, dt-clean-right, dt-hide-subforem, dt-smooth-scroll-enabled)
 					const oldClasses = new Set(oldValue.split(/\s+/).filter((c) => c));
 					const newClasses = new Set(newValue.split(/\s+/).filter((c) => c));
 
-					// Find what changed
 					const added = [...newClasses].filter((c) => !oldClasses.has(c));
 					const removed = [...oldClasses].filter((c) => !newClasses.has(c));
 					const allChanges = [...added, ...removed];
@@ -94,10 +97,10 @@ export default defineContentScript({
 						cls.startsWith("dt-"),
 					);
 					if (onlyOurClasses) {
-						return false; // Ignore our own class changes
+						return false;
 					}
 
-					return true; // External class change, this is significant
+					return true;
 				}
 
 				return false;
@@ -114,7 +117,7 @@ export default defineContentScript({
 			subtree: true,
 			attributes: true,
 			attributeFilter: ["class"],
-			attributeOldValue: true, // Need this to compare old vs new classes
+			attributeOldValue: true,
 			characterData: false,
 		});
 	},
