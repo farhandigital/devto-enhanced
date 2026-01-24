@@ -72,8 +72,10 @@ export default defineContentScript({
 					const target = mutation.target as Element;
 					const isMainContent =
 						target.matches(Selectors.mainContent) ||
+						target.matches(Selectors.pageContentInner) ||
 						target.matches(Selectors.home.storiesIndex) ||
 						target.matches(Selectors.article.body);
+
 					if (isMainContent) return true;
 				}
 
@@ -96,6 +98,7 @@ export default defineContentScript({
 					const onlyOurClasses = allChanges.every((cls) =>
 						cls.startsWith("dt-"),
 					);
+
 					if (onlyOurClasses) {
 						return false;
 					}
