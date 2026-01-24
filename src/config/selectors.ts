@@ -7,6 +7,7 @@ export const Selectors = {
 	// Page structure
 	body: "body",
 	mainContent: "#main-content",
+	pageContentInner: "#page-content-inner", // SPA navigation container
 
 	// Article elements
 	article: {
