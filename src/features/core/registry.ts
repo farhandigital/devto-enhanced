@@ -37,18 +37,9 @@ export function registerFeature(feature: FeatureDefinition): void {
 }
 
 /**
- * Get all registered features
- */
-export function getAllFeatures(): readonly FeatureDefinition[] {
-	return features;
-}
-
-/**
  * Get features applicable to a specific context
  */
-export function getFeaturesForContext(
-	context: PageContext,
-): FeatureDefinition[] {
+function getFeaturesForContext(context: PageContext): FeatureDefinition[] {
 	return features.filter((feature) => feature.context.includes(context));
 }
 
