@@ -1,6 +1,6 @@
 <script lang="ts">
 import { onDestroy, onMount } from "svelte";
-import { getUIFeatureGroups } from "@/features/core/registry";
+import { getSettingValue, getUIFeatureGroups } from "@/features/core/registry";
 import type { ExtensionSettings, FeatureGroup, FeatureMetadata } from "@/types";
 import { DEFAULT_SETTINGS } from "@/types";
 import { settingsStorage, updateSetting } from "@/utils/storage";
@@ -72,12 +72,6 @@ async function handleToggle(feature: FeatureMetadata, e: Event) {
 		console.error("Failed to update setting:", error);
 		target.checked = !target.checked;
 	}
-}
-
-function getSettingValue(feature: FeatureMetadata): boolean {
-	const { section, key } = feature.settingKey;
-	const sectionSettings = settings[section];
-	return (sectionSettings as Record<string, boolean>)[key as string] ?? false;
 }
 
 function getEmoji(featureType: "hide" | "add"): string {
@@ -153,7 +147,7 @@ function getDisabledTooltip(feature: FeatureMetadata): string | null {
               <input
                 type="checkbox"
                 id="{group.context}-{feature.settingKey.key}"
-                checked={getSettingValue(feature)}
+                checked={getSettingValue(settings, feature.settingKey)}
                 onchange={(e) => handleToggle(feature, e)}
                 aria-labelledby="{group.context}-{feature.settingKey.key}-label"
                 disabled={!enabled}
