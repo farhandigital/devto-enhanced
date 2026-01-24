@@ -4,7 +4,10 @@
  */
 
 import { Selectors } from "@/config/selectors";
-import type { ExtensionSettings } from "@/types/settings";
+import { registerFeature } from "@/features/core/registry";
+import type { ExtensionSettings, FeatureDefinition } from "@/types";
+
+const BUTTON_ID = "dt-copy-article-btn";
 
 /**
  * Extracts text content from an element while preserving formatting
@@ -22,13 +25,12 @@ function extractFormattedText(element: Element): string {
 			const el = node as Element;
 			const tagName = el.tagName.toLowerCase();
 
-			// Handle different element types
 			switch (tagName) {
 				case "br":
 					parts.push("\n");
 					break;
 				case "p":
-					parts.push("\n" + extractFormattedText(el) + "\n");
+					parts.push(`\n${extractFormattedText(el)}\n`);
 					break;
 				case "h1":
 				case "h2":
@@ -36,44 +38,40 @@ function extractFormattedText(element: Element): string {
 				case "h4":
 				case "h5":
 				case "h6":
-					parts.push("\n" + extractFormattedText(el) + "\n");
+					parts.push(`\n${extractFormattedText(el)}\n`);
 					break;
 				case "strong":
 				case "b":
-					parts.push("**" + extractFormattedText(el) + "**");
+					parts.push(`**${extractFormattedText(el)}**`);
 					break;
 				case "em":
 				case "i":
-					parts.push("*" + extractFormattedText(el) + "*");
+					parts.push(`*${extractFormattedText(el)}*`);
 					break;
 				case "code":
-					// Inline code
 					if (
 						!el.parentElement ||
 						el.parentElement.tagName.toLowerCase() !== "pre"
 					) {
-						parts.push("`" + (el.textContent || "") + "`");
+						parts.push(`\`${el.textContent || ""}\``);
 					} else {
-						// Block code - handled by pre
 						parts.push(el.textContent || "");
 					}
 					break;
 				case "pre": {
-					// Code block
 					const codeEl = el.querySelector("code");
 					if (codeEl) {
-						parts.push("\n```\n" + (codeEl.textContent || "") + "\n```\n");
+						parts.push(`\n\`\`\`\n${codeEl.textContent || ""}\n\`\`\`\n`);
 					} else {
-						parts.push("\n" + (el.textContent || "") + "\n");
+						parts.push(`\n${el.textContent || ""}\n`);
 					}
 					break;
 				}
 				case "ul":
 				case "ol":
-					parts.push("\n" + extractList(el, tagName) + "\n");
+					parts.push(`\n${extractList(el, tagName)}\n`);
 					break;
 				case "li":
-					// Handled by parent ul/ol
 					parts.push(extractFormattedText(el));
 					break;
 				case "a": {
@@ -91,11 +89,10 @@ function extractFormattedText(element: Element): string {
 					break;
 				case "blockquote": {
 					const quoteText = extractFormattedText(el);
-					parts.push("\n> " + quoteText.split("\n").join("\n> ") + "\n");
+					parts.push(`\n> ${quoteText.split("\n").join("\n> ")}\n`);
 					break;
 				}
 				default:
-					// For other elements, recursively extract
 					parts.push(extractFormattedText(el));
 					break;
 			}
@@ -105,9 +102,6 @@ function extractFormattedText(element: Element): string {
 	return parts.join("");
 }
 
-/**
- * Extracts list items with proper formatting
- */
 function extractList(listEl: Element, type: string): string {
 	const items: string[] = [];
 	const listItems = listEl.querySelectorAll(":scope > li");
@@ -121,22 +115,18 @@ function extractList(listEl: Element, type: string): string {
 	return items.join("\n");
 }
 
-/**
- * Extracts the full article content with formatting
- */
 function extractArticleContent(): string {
 	const parts: string[] = [];
 
 	// Extract title
 	const titleEl = document.querySelector(Selectors.article.titleHeader);
 	if (titleEl) {
-		parts.push("# " + titleEl.textContent?.trim() + "\n");
+		parts.push(`# ${titleEl.textContent?.trim()}\n`);
 	}
 
-	// Extract metadata (author and URL)
+	// Extract metadata
 	const metadata: string[] = [];
 
-	// Extract author
 	const authorEl = document.querySelector(Selectors.article.authorLink);
 	if (authorEl) {
 		const authorName = authorEl.textContent?.trim();
@@ -149,19 +139,17 @@ function extractArticleContent(): string {
 		}
 	}
 
-	// Extract article URL
 	const articleUrl = window.location.href;
 	metadata.push(`**URL:** ${articleUrl}`);
 
 	if (metadata.length > 0) {
-		parts.push(metadata.join("  \n") + "\n");
+		parts.push(`${metadata.join("  \n")}\n`);
 	}
 
 	// Extract article body
 	const articleBody = document.querySelector(Selectors.article.bodyId);
 	if (articleBody) {
 		const content = extractFormattedText(articleBody);
-		// Clean up excessive newlines
 		const cleaned = content.replace(/\n{3,}/g, "\n\n").trim();
 		parts.push(cleaned);
 	}
@@ -169,9 +157,6 @@ function extractArticleContent(): string {
 	return parts.join("\n");
 }
 
-/**
- * Copies text to clipboard
- */
 async function copyToClipboard(text: string): Promise<boolean> {
 	try {
 		await navigator.clipboard.writeText(text);
@@ -182,21 +167,15 @@ async function copyToClipboard(text: string): Promise<boolean> {
 	}
 }
 
-/**
- * Renders the copy article button
- */
-export function renderCopyArticleButton(settings: ExtensionSettings) {
-	const existingButton = document.getElementById("dt-copy-article-btn");
+function renderCopyArticleButton(settings: ExtensionSettings) {
+	const existingButton = document.getElementById(BUTTON_ID);
 
-	// Remove existing button
 	if (existingButton) {
 		existingButton.remove();
 	}
 
-	// Check if feature is enabled
 	if (!settings.article.showCopyButton) return;
 
-	// Find insertion point (after tags or after title)
 	const titleHeader = document.querySelector(
 		Selectors.article.titleHeaderContainer,
 	);
@@ -209,9 +188,8 @@ export function renderCopyArticleButton(settings: ExtensionSettings) {
 
 	if (!insertionPoint) return;
 
-	// Create button
 	const button = document.createElement("button");
-	button.id = "dt-copy-article-btn";
+	button.id = BUTTON_ID;
 	button.className = "dt-copy-article-btn";
 	button.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -226,7 +204,6 @@ export function renderCopyArticleButton(settings: ExtensionSettings) {
 		const success = await copyToClipboard(content);
 
 		if (success) {
-			// Change button to success state
 			button.classList.add("dt-copy-success");
 			button.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -235,7 +212,6 @@ export function renderCopyArticleButton(settings: ExtensionSettings) {
         Copied!
       `;
 
-			// Reset button after 2 seconds
 			setTimeout(() => {
 				button.classList.remove("dt-copy-success");
 				button.innerHTML = `
@@ -247,7 +223,6 @@ export function renderCopyArticleButton(settings: ExtensionSettings) {
         `;
 			}, 2000);
 		} else {
-			// Show error state briefly
 			button.classList.add("dt-copy-error");
 			button.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -271,6 +246,21 @@ export function renderCopyArticleButton(settings: ExtensionSettings) {
 		}
 	};
 
-	// Insert button after tags or title
 	insertionPoint.insertAdjacentElement("afterend", button);
 }
+
+const feature: FeatureDefinition = {
+	name: "copyArticleButton",
+	context: ["article"],
+	type: "add",
+	settingKey: { section: "article", key: "showCopyButton" },
+	label: "Copy Article Button",
+	execute: renderCopyArticleButton,
+	cleanup: () => {
+		document.getElementById(BUTTON_ID)?.remove();
+	},
+};
+
+registerFeature(feature);
+
+export default feature;

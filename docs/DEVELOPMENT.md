@@ -1,6 +1,6 @@
 # Development Guide
 
-This guide covers how to set up your development environment, build the project, and add new features.
+This guide covers how to set up your development environment, build the project, and add new features using the modular architecture.
 
 ## Prerequisites
 
@@ -42,89 +42,102 @@ bun run zip:firefox   # Firefox
 
 ```bash
 src/
-├── assets/              # Static assets (icons, images)
-│   └── icon.png         # Extension icon
-├── config/              # Configuration files
-│   ├── hideableElements.ts  # Declarative configuration for hideable elements
-│   └── selectors.ts     # DOM selector constants
-├── entrypoints/         # Extension entry points
-│   ├── content.ts       # Main content script
-│   ├── devto.css        # Injected styles
-│   └── popup/           # Extension popup UI (Svelte)
-│       ├── App.svelte   # Main popup component
-│       ├── app.css      # Popup styles
-│       ├── index.html   # Popup HTML entry
-│       └── main.ts      # Popup initialization
-├── features/            # Feature System
-│   ├── feature-definitions.ts # Shared feature metadata (content script)
-│   ├── metadata.ts      # Feature metadata (popup - duplicated for perf)
-│   ├── index.ts         # Feature registration with implementations
-│   ├── registry.ts      # Core registry logic
-│   ├── articleActionMover.ts   # Move engagement buttons feature
-│   ├── articleCentering.ts     # Center article content feature
-│   ├── copyArticle.ts          # Copy article as Markdown feature
-│   ├── layoutCleaner.ts        # Hide sidebars/elements feature
-│   ├── readingStats.ts         # Reading time/word count feature
-│   └── tocGenerator.ts         # Table of contents feature
-├── types/               # TypeScript Definitions
-│   ├── feature.ts       # Feature type definitions
-│   ├── hideable.ts      # Hideable element type definitions
-│   └── settings.ts      # Settings type definitions
-└── utils/               # Utility modules
-    ├── pageDetector.ts  # Page type detection
-    └── storage.ts       # Storage management
+├── assets/                  # Static assets (icons)
+├── config/                  # Configuration
+│   └── selectors.ts         # Centralized CSS selectors
+├── entrypoints/             # Extension Entry Points
+│   ├── content.ts           # Main content script
+│   ├── devto.css            # Global injected styles
+│   └── popup/               # Popup UI (Svelte)
+│       └── App.svelte       # Dynamic UI renderer
+├── features/                # Modular Feature System
+│   ├── core/                # Core engine
+│   │   └── registry.ts      # Feature registration & execution logic
+│   └── definitions/         # Feature Modules (The "Features")
+│       ├── index.ts         # Main entry point
+│       ├── global/          # Global features (e.g. hide subforem)
+│       ├── home/            # Homepage features (e.g. hide sidebars)
+│       └── article/         # Article features (e.g. TOC, reading stats)
+├── types/                   # Unified Type Definitions
+│   └── index.ts             # Single source of truth for types
+└── utils/                   # Utilities
+    ├── pageDetector.ts      # Page context detection
+    └── storage.ts           # Settings storage
 ```
 
 ## Adding New Features
 
-The extension uses a declarative feature registry system with a split between metadata and implementation to optimize popup performance. To add a new feature:
+The new architecture makes adding features extremely simple. You no longer need to touch registry files, metadata files, or the popup UI code.
 
-1. **Define the Metadata**:
+### Step 1: Create the Feature Module
 
-   Add the definition to **BOTH** `src/features/feature-definitions.ts` (for content script) and `src/features/metadata.ts` (for popup).
-
-   > **Note**: Metadata must be manually duplicated in `metadata.ts` to keep the popup bundle completely decoupled and instant.
-
-   ```typescript
-   {
-    name: "yourFeature",
-    context: ["article"], // or ["home", "global"]
-    type: "add", // or "hide"
-    settingKey: { section: "article", key: "yourFeature" },
-    label: "Your Feature Label",
-   },
-   ```
-
-2. **Create the Implementation** in `src/features/yourFeature.ts`:
+Create a new file in `src/features/definitions/[context]/`. For example `src/features/definitions/article/myNewFeature.ts`.
 
 ```typescript
-export function handleYourFeature(settings: ExtensionSettings) {
-  // Your feature logic here
-}
-```
+import { registerFeature } from "@/features/core/registry";
+import type { FeatureDefinition, ExtensionSettings } from "@/types";
 
-3. **Register the Implementation** in `src/features/index.ts`:
+const feature: FeatureDefinition = {
+  name: "myNewFeature",
+  label: "My New Feature",
+  context: ["article"],
+  type: "add", // or "hide"
+  settingKey: { section: "article", key: "myNewFeature" },
+  
+  // Optional: Only allow enabling if another setting is true
+  isEnabled: (settings) => settings.article.hideRightSidebar,
+  
+  // Optional: Tooltip to show when disabled
+  disabledTooltip: (settings) => 
+    !settings.article.hideRightSidebar ? "Requires hidden sidebar" : null,
 
-```typescript
-// Import your function
-import { handleYourFeature } from "./yourFeature";
-
-// Add to the executeMap
-const executeMap: Record<string, (settings: ExtensionSettings) => void> = {
-  // ...
-  yourFeature: handleYourFeature,
+  // The logic to run
+  execute: (settings: ExtensionSettings) => {
+    console.log("My feature is running!");
+    // Your DOM manipulation here
+  },
+  
+  // Cleanup logic (optional)
+  cleanup: () => {
+    // Remove elements or listeners
+  }
 };
+
+registerFeature(feature);
+
+export default feature;
 ```
 
-4. **Add the Type Definitions** in `src/types/settings.ts`:
+### Step 2: Register the Module
+
+Add a simple import to the index file in your context folder (e.g., `src/features/definitions/article/index.ts`):
+
+```typescript
+import "./myNewFeature";
+```
+
+### Step 3: Add Settings Type (If needed)
+
+If your feature introduces a *new* setting key that doesn't exist yet, add it to `src/types/index.ts`:
 
 ```typescript
 export interface ExtensionSettings {
   article: {
     // ... existing settings
-    yourFeature: boolean;
+    myNewFeature: boolean; // Add this
   };
 }
+
+export const DEFAULT_SETTINGS: ExtensionSettings = {
+  article: {
+    // ...
+    myNewFeature: true, // Add default
+  },
+};
 ```
 
-The feature will now automatically appear in the popup (using metadata) and execute in the content script (using the implementation)!
+**That's it!** 
+The feature will now:
+1.  Automatically appear in the Popup UI under the correct section.
+2.  Be persisted in storage.
+3.  Execute automatically on the correct pages.
