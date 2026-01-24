@@ -12,13 +12,16 @@
 		"zip": "wxt zip",
 		"zip:firefox": "wxt zip -b firefox --mv3",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
-		"postinstall": "wxt prepare"
+		"postinstall": "wxt prepare",
+		"knip": "knip"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.10",
 		"@tsconfig/svelte": "^5.0.6",
+		"@types/node": "^25.0.10",
 		"@wxt-dev/auto-icons": "^1.1.0",
 		"@wxt-dev/module-svelte": "^2.0.4",
+		"knip": "^5.82.1",
 		"lefthook": "^2.0.13",
 		"svelte": "^5.46.0",
 		"svelte-check": "^4.3.4",

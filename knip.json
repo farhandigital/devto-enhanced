@@ -1,0 +1,23 @@
+{
+	"$schema": "https://unpkg.com/knip@5/schema.json",
+	"tags": ["-lintignore"],
+	"entry": [
+		"wxt.config.ts",
+		"src/entrypoints/content.ts",
+		"src/entrypoints/popup/main.ts",
+		"src/entrypoints/**/*.css"
+	],
+	"project": ["src/**/*.{ts,svelte,css}"],
+	"ignore": [".wxt/**", ".output/**", "wxt-env.d.ts"],
+	"ignoreUnresolved": ["#imports"],
+	"ignoreDependencies": [
+		"wxt",
+		"@wxt-dev/module-svelte",
+		"@wxt-dev/auto-icons",
+		"@tsconfig/svelte",
+		"tslib"
+	],
+	"svelte": {
+		"entry": ["src/entrypoints/popup/App.svelte"]
+	}
+}
