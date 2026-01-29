@@ -65,10 +65,6 @@ const feature: FeatureDefinition = {
 		const statsElement = createStatsElement(words, minutes);
 		titleHeader.insertAdjacentElement("afterend", statsElement);
 	},
-
-	cleanup: () => {
-		document.getElementById(CONTAINER_ID)?.remove();
-	},
 };
 
 registerFeature(feature);

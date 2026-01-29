@@ -173,13 +173,6 @@ const feature: FeatureDefinition = {
 	settingKey: { section: "article", key: "showToC" },
 	label: "Sticky Table of Contents",
 	execute: renderTableOfContents,
-	cleanup: () => {
-		if (headingObserver) {
-			headingObserver.disconnect();
-			headingObserver = null;
-		}
-		document.getElementById(CONTAINER_ID)?.remove();
-	},
 };
 
 registerFeature(feature);

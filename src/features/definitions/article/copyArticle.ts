@@ -256,9 +256,6 @@ const feature: FeatureDefinition = {
 	settingKey: { section: "article", key: "showCopyButton" },
 	label: "Copy Article Button",
 	execute: renderCopyArticleButton,
-	cleanup: () => {
-		document.getElementById(BUTTON_ID)?.remove();
-	},
 };
 
 registerFeature(feature);

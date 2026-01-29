@@ -108,11 +108,6 @@ export interface FeatureDefinition {
 	execute?: (settings: ExtensionSettings) => void;
 
 	/**
-	 * Optional cleanup function called when feature is disabled
-	 */
-	cleanup?: () => void;
-
-	/**
 	 * CSS class to apply to body when feature is enabled (for hide features)
 	 */
 	cssClass?: string;

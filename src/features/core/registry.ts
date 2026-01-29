@@ -44,7 +44,7 @@ function getFeaturesForContext(context: PageContext): FeatureDefinition[] {
 }
 
 /**
- * Convert a feature definition to metadata (strips execute/cleanup)
+ * Convert a feature definition to metadata (strips execute)
  */
 function toMetadata(feature: FeatureDefinition): FeatureMetadata {
 	return {
