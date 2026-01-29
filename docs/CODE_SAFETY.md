@@ -440,10 +440,10 @@ async function handleToggle(feature: FeatureMetadata, e: Event) {
   - [ ] Async operations have try/catch
   - [ ] User-facing errors provide feedback (not silent failures)
 
-- [ ] **Cleanup**
-  - [ ] `cleanup()` function provided if feature modifies DOM
-  - [ ] Observers/timers properly disconnected
-  - [ ] Optional chaining in cleanup (`element?.remove()`)
+- [ ] **Idempotent Execution**
+  - [ ] Feature handles both enable and disable cases in `execute()`
+  - [ ] Can be called multiple times without side effects
+  - [ ] Removes old elements before adding new ones (if applicable)
 
 ### For Settings Changes
 

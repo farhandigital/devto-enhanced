@@ -9,7 +9,6 @@ The extension uses a **modular, self-contained architecture** designed for loose
 1.  **Self-Contained Modules**: Every feature resides in its own file (e.g., `features/definitions/article/centerArticle.ts`) and contains everything it needs:
     *   Metadata (name, label, context)
     *   Execution logic (`execute`)
-    *   Cleanup logic (`cleanup`)
     *   Enable/Disable conditions (`isEnabled`)
     *   UI configuration (`disabledTooltip`)
 
@@ -49,7 +48,7 @@ Features are broadly categorized by how they interact with the page:
     *   *Example*: Hiding the right sidebar.
 
 *   **`add` type**: Functional features that manipulate the DOM or add new elements.
-    *   *Implementation*: Defines an `execute()` function to run logic (and optionally a `cleanup()` function to reverse it).
+    *   *Implementation*: Defines an `execute()` function that both adds and removes elements based on settings (idempotent pattern).
     *   *Example*: Generating a table of contents or adding a reading time estimate.
 
 ## Mutation Observer Strategy
