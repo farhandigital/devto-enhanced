@@ -55,15 +55,15 @@ const feature: FeatureDefinition = {
 		if (existing) return;
 
 		const articleBody = document.querySelector(Selectors.article.body);
-		const titleHeader = document.querySelector(
-			Selectors.article.titleHeaderContainer,
+		const tagsContainer = document.querySelector(
+			Selectors.article.tagsContainer,
 		);
 
-		if (!articleBody || !titleHeader) return;
+		if (!articleBody || !tagsContainer) return;
 
 		const { words, minutes } = calculateReadingStats(articleBody);
 		const statsElement = createStatsElement(words, minutes);
-		titleHeader.insertAdjacentElement("afterend", statsElement);
+		tagsContainer.insertAdjacentElement("afterend", statsElement);
 	},
 };
 
