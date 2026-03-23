@@ -1,5 +1,10 @@
 pre-commit:
+  parallel: true
   commands:
     biome-check:
       run: bunx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      stage_fixed: true
+    prettier-yaml:
+      glob: "**/*.{yml,yaml}"
+      run: bunx prettier --write {staged_files}
       stage_fixed: true
