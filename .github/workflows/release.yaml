@@ -2,7 +2,7 @@ name: Release Pipeline
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
   release:
@@ -10,41 +10,41 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - uses: oven-sh/setup-bun@v2
-      with:
-        bun-version: "1.3.x"
-      
-    - name: Read name and version from package.json 
-      id: pkg
-      run: bash .github/workflows/jobs-scripts/pkg.sh
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.x"
 
-    - name: Compare version value from package.json with tag
-      id: check-version
-      run: bash .github/workflows/jobs-scripts/check-version.sh
-      env:
-        tag_version: ${{ github.ref_name }}
-        package_version: ${{ steps.pkg.outputs.version }}
-    
-    - name: Check Release Note
-      run: bash .github/workflows/jobs-scripts/check-release.sh
-      env:
-        name: ${{ steps.pkg.outputs.name }}
-        version: ${{ steps.pkg.outputs.version }}
-      
-    - name: install dependencies
-      run: bun install --frozen-lockfile
+      - name: Read name and version from package.json
+        id: pkg
+        run: bash .github/workflows/jobs-scripts/pkg.sh
 
-    - name: Build Artifacts 
-      run: |
-        bun run build
-        bun run build:firefox
-        
-    - name: Create release
-      run: bash .github/workflows/jobs-scripts/release.sh
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        name: ${{ steps.pkg.outputs.name }}
-        version: ${{ steps.pkg.outputs.version }}
+      - name: Compare version value from package.json with tag
+        id: check-version
+        run: bash .github/workflows/jobs-scripts/check-version.sh
+        env:
+          tag_version: ${{ github.ref_name }}
+          package_version: ${{ steps.pkg.outputs.version }}
+
+      - name: Check Release Note
+        run: bash .github/workflows/jobs-scripts/check-release.sh
+        env:
+          name: ${{ steps.pkg.outputs.name }}
+          version: ${{ steps.pkg.outputs.version }}
+
+      - name: install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build Artifacts
+        run: |
+          bun run build
+          bun run build:firefox
+
+      - name: Create release
+        run: bash .github/workflows/jobs-scripts/release.sh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ steps.pkg.outputs.name }}
+          version: ${{ steps.pkg.outputs.version }}
